@@ -10,8 +10,17 @@ const db = new Database("./database.sqlite", (err) => {
   }
 });
 
-// Convertendo os métodos do SQLite para Promises
-const dbGet = promisify(db.get).bind(db);
+// Criando uma função `dbGet` personalizada que suporta parâmetros
+const dbGet = (query: string, params = []) => {
+  return new Promise((resolve, reject) => {
+    db.get(query, params, (err, row) => {
+      if (err) return reject(err);
+      resolve(row);
+    });
+  });
+};
+
+// Convertendo `db.all` para Promises
 const dbAll = promisify(db.all).bind(db);
 
 // Criação das tabelas (se não existirem)
