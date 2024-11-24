@@ -1,7 +1,13 @@
 import { Database } from "sqlite3";
 import { promisify } from "util";
 
-// Inicializando o banco de dados SQLite
+// Tipagem explícita para os resultados da consulta
+interface Favorite {
+  id: number;
+  symbol: string;
+  shortName: string;
+}
+
 const db = new Database("./database.sqlite", (err) => {
   if (err) {
     console.error("Erro ao conectar ao banco de dados:", err);
@@ -10,17 +16,25 @@ const db = new Database("./database.sqlite", (err) => {
   }
 });
 
-// Criando uma função `dbGet` personalizada que suporta parâmetros
-const dbGet = (query: string, params = []) => {
+// Convertendo os métodos do SQLite para Promises
+// Modificando a forma como dbGet é tipado
+const dbGet = (query: string, params: any[]): Promise<Favorite | undefined> => {
   return new Promise((resolve, reject) => {
     db.get(query, params, (err, row) => {
-      if (err) return reject(err);
-      resolve(row);
+      if (err) {
+        reject(err);
+      } else {
+        // Verifica se 'row' tem as propriedades esperadas de um 'Favorite'
+        if (row && typeof row.id === "number" && typeof row.symbol === "string" && typeof row.shortName === "string") {
+          resolve(row as Favorite); // Tipo explicitamente convertido para 'Favorite'
+        } else {
+          resolve(undefined); // Caso não seja um 'Favorite', resolve como 'undefined'
+        }
+      }
     });
   });
 };
 
-// Convertendo `db.all` para Promises
 const dbAll = promisify(db.all).bind(db);
 
 // Criação das tabelas (se não existirem)
@@ -42,4 +56,5 @@ db.serialize(() => {
   `);
 });
 
+// Exportando dbGet e dbAll com a tipagem de Favorite
 export { db, dbGet, dbAll };

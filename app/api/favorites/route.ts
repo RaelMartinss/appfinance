@@ -56,36 +56,24 @@ export async function DELETE(req: Request) {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const symbol = searchParams.get("symbol"); // Pega o símbolo enviado na query string
-  
-  // Garantir que o symbol seja tratado como string, se não, retornar erro
-  if (symbol === null) {
+  const symbol = searchParams.get("symbol");
+
+  if (!symbol) {
     return NextResponse.json({ error: "Símbolo não fornecido." }, { status: 400 });
   }
 
   try {
-    if (symbol) {
-      console.log("estou no GET COM symbol");
+    // Certificando-se de que symbol é tratado corretamente como string
+    const favorite = await dbGet("SELECT * FROM favorites WHERE symbol = ?", [symbol]);
 
-      // Certificando-se de que symbol é tratado corretamente como string
-      const favorite = await dbGet("SELECT * FROM favorites WHERE symbol = ?", [symbol]);
-
-      if (favorite) {
-        return NextResponse.json({ isFavorite: true });
-      } else {
-        return NextResponse.json({ isFavorite: false });
-      }
+    if (favorite) {
+      // Agora o TypeScript sabe que favorite é do tipo Favorite ou undefined
+      return NextResponse.json({ isFavorite: true });
     } else {
-      console.log("SEM O SYMBOL");
-
-      // Caso contrário, retorna todos os favoritos
-      const favorites = await dbAll("SELECT * FROM favorites");
-      console.log("favorites", favorites);
-      return NextResponse.json(favorites);
+      return NextResponse.json({ isFavorite: false });
     }
   } catch (error) {
     console.error("Erro ao buscar favoritos:", error);
     return NextResponse.json({ error: "Erro ao buscar favoritos." }, { status: 500 });
   }
 }
-
