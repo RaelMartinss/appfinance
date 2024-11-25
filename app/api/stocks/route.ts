@@ -180,13 +180,13 @@ export async function GET(req: Request) {
       const lastDividend = dividends.length ? dividends[dividends.length - 1] : null;
       return {
         symbol,
-        price: quote.regularMarketPrice,
-        dividend: quote.trailingAnnualDividendRate,
-        marketCap: quote.marketCap,
-        pvpRatio: quote.priceToBook || 0,
-        changePercent: quote.regularMarketChangePercent,
-        shortName: quote.shortName,
-        marketChange: quote.regularMarketChange,
+        price: quote?.regularMarketPrice ?? 0,
+        dividend: quote?.trailingAnnualDividendRate ?? 0,
+        marketCap: quote?.marketCap ?? 0,
+        pvpRatio: quote?.priceToBook || 0,
+        changePercent: quote?.regularMarketChangePercent ?? 0,
+        shortName: quote?.shortName ?? 0,
+        marketChange: quote?.regularMarketChange,
         historicalData: formattedPriceData[index], // Dados históricos de preços formatados
         dividends, // Todos os dividendos
         lastDividend: lastDividend ? lastDividend.dividends : null, // Último dividendo
