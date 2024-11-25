@@ -9,9 +9,16 @@ import { StockCard } from '@/components/stock-card';
 import { StockData } from '@/lib/types';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
+interface Fund {
+  id: number;
+  symbol: string;
+  shortName: string;
+}
+
 export default function MarketPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<StockData[]>([]);
+  const [pecentResults, setPecentResults] = useState<StockData[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]); 
   const [loading, setLoading] = useState(false)
 
@@ -23,7 +30,7 @@ export default function MarketPage() {
       const response = await fetch(`/api/stocks?symbol=${searchQuery.toUpperCase()}`);
       const data = await response.json();
       console.log('MarketPage - data', data);
-      setSearchResults([data]);
+      setSearchResults(data);
     } catch (error) {
       console.error('Error searching stocks:', error);
     }
@@ -34,10 +41,24 @@ export default function MarketPage() {
     const fetchFavorites = async () => {
       setLoading(true);
       try {
-        const response = await fetch('/api/favorites'); // Chamada sem o parâmetro symbol
-        const data = await response.json();
+        const response = await fetch('/api/favorites');
+        const data: Fund = await response.json();
 
-        console.log('Favorites - data', data);
+        if (Array.isArray(data)) {
+          const symbols: string[] = data.map(item => item.symbol);
+          console.log('Symbols ---', symbols)
+          const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
+          const d = await r.json();
+          setPecentResults(d)
+          console.log('Stocks data ---', d);
+        }
+        else {
+          console.error('Os dados não são uma tabela.');
+        }
+        // const symbol: string[] = data.map(item => item.symbol)
+
+        // const r = await fetch(`/api/stocks?symbol=${symbol.toUpperCase()}`);
+        // const d = await r.json();
 
         if (response.ok) {
           setFavorites(data); // Atualiza o estado com os favoritos
@@ -105,11 +126,10 @@ export default function MarketPage() {
             <div className="space-y-4">
               {favorites.map((favorite) => {
                 // Procurar o preço correspondente ao símbolo no searchResults
-                const stockData = searchResults.find(
+                const stockData = pecentResults.find(
                   (stock) => stock.symbol === favorite.symbol
                 );
-                console.log('stockData', stockData);
-                console.log('searchResults', searchResults);
+                console.log('stockData - pecente', stockData);
 
                 return (
                   <div
@@ -135,15 +155,15 @@ export default function MarketPage() {
                           : 'Carregando...'}
                       </p>
                       <div className="flex items-center gap-1">
-                        {stockData?.change > 0 ? (
+                        {stockData?.changePercent > 0 ? (
                           <TrendingUp className="w-4 h-4 text-green-500" />
-                        ) : stockData?.change < 0 ? (
+                        ) : stockData?.changePercent < 0 ? (
                           <TrendingDown className="w-4 h-4 text-red-500" />
                         ) : (
                           <span className="w-4 h-4 text-gray-500" />
                         )}
                         <span
-                          className={`text-sm ${stockData?.change > 0 ? 'text-green-500' : 'text-red-500'}`}
+                          className={`text-sm ${stockData?.changePercent > 0 ? 'text-green-500' : 'text-red-500'}`}
                         >
                           {stockData?.changePercent?.toFixed(2)}%
                         </span>

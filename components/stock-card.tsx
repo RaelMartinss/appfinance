@@ -17,7 +17,8 @@ export function StockCard({ symbol, name, price, change, changePercent }: StockC
   const [currentPrice, setCurrentPrice] = useState(price || 0);
   const [currentChange, setCurrentChange] = useState(change || 0);
   const [currentChangePercent, setCurrentChangePercent] = useState(changePercent || 0);
-  console.log('symbol', symbol)
+
+  console.log('StockCard - symbol', symbol)
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
@@ -25,9 +26,12 @@ export function StockCard({ symbol, name, price, change, changePercent }: StockC
         const response = await fetch(`/api/stocks?symbol=${symbol.toUpperCase()}`);
         console.log('response', response);
         const data = await response.json();
+
         console.log('data', data);
+
         setCurrentPrice(data.price);
         console.log('setCurrentPrice', setCurrentPrice)
+
         setCurrentChange(data.change);
         setCurrentChangePercent(data.changePercent);
       } catch (error) {
@@ -54,8 +58,8 @@ export function StockCard({ symbol, name, price, change, changePercent }: StockC
         </div>
         <div className="text-right">
           <p className="font-medium">
-          {currentPrice !== undefined
-            ? currentPrice.toLocaleString('pt-BR', {
+          {price !== undefined
+            ? price.toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
               })
@@ -73,7 +77,7 @@ export function StockCard({ symbol, name, price, change, changePercent }: StockC
                 isPositive ? "text-green-500" : "text-red-500"
               )}
             >
-              {currentChangePercent.toFixed(2)}%
+              {changePercent.toFixed(2)}%
             </span>
           </div>
         </div>
