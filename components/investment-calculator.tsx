@@ -25,7 +25,7 @@ export function InvestmentCalculator({ stockData }: InvestmentCalculatorProps) {
     if (isNaN(numValue) || numValue <= 0) return;
 
     const monthlyDividend = stockData.lastDividend;
-    const sharePrice = stockData.price;
+    const sharePrice = typeof stockData.price === 'number' ? stockData.price : parseFloat(stockData.price);
 
     console.log('sharePrice', sharePrice)
     console.log('monthlyDividend', monthlyDividend)
