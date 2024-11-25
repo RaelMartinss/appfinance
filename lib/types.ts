@@ -1,16 +1,15 @@
 export interface StockData {
   symbol: string;
-  symbolSa: string;
   currentPrice: number;
   lastDividend: number;
   pvpRatio: number;
-  regularMarketPrice: number;
-  price: number;
-  dividend: number;
   shortName: string;
   change: number;
   changePercent: number;
-  historicalData: HistoricalData[];
+  regularMarketPrice?: number; // Opcional
+  price?: number; // Opcional
+  dividend?: number; // Opcional
+  historicalData?: HistoricalData[]; // Opcional
 }
 
 export interface PortfolioItem {

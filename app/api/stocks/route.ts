@@ -125,6 +125,7 @@
 
 import { NextResponse } from "next/server";
 import yahooFinance from "yahoo-finance2";
+import { formatSymbol } from '@/lib/stock-service';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -137,10 +138,11 @@ export async function GET(req: Request) {
   const symbols = symbolParam.split(",").map((symbol) => symbol.trim());
 
   const processedSymbols = symbols.map((symbol) => {
-    if (!symbol.endsWith(".SA")) {
-      return `${symbol}.SA`;
-    }
-    return symbol;
+    // if (!symbol.endsWith(".SA")) {
+    //   return `${symbol}.SA`;
+    // }
+    const formattedSymbol = formatSymbol(symbol);
+    return formattedSymbol;
   });
 
   try {
@@ -189,7 +191,7 @@ export async function GET(req: Request) {
         marketChange: quote?.regularMarketChange,
         historicalData: formattedPriceData[index], // Dados históricos de preços formatados
         dividends, // Todos os dividendos
-        lastDividend: lastDividend ? lastDividend.dividends : null, // Último dividendo
+        lastDividend: lastDividend ? lastDividend.dividends : 0, // Último dividendo
         dividendDate: lastDividend ? lastDividend.date.toISOString().split("T")[0] : null, // Data do último dividendo
       };
     });

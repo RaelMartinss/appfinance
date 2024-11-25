@@ -1,14 +1,23 @@
-import { StockAnalyzer } from '@/components/stock-analyzer';
+"use client";
+
+import { PortfolioAllocation } from '@/components/portfolio-allocation';
+import { PortfolioSummary } from '@/components/portfolio-summary';
+import { AssetsTable } from '@/components/assets-table';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-        Sistema de Gestão Financeira
-        </h1>
-        <StockAnalyzer />
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-8">Portfolio Dashboard</h1>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <PortfolioAllocation />
+        <PortfolioSummary />
       </div>
-    </main>
+
+      <div className="bg-card rounded-lg border p-6">
+        <h2 className="text-2xl font-semibold mb-6">Assets List</h2>
+        <AssetsTable />
+      </div>
+    </div>
   );
 }

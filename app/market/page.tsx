@@ -8,6 +8,7 @@ import { Search } from 'lucide-react';
 import { StockCard } from '@/components/stock-card';
 import { StockData } from '@/lib/types';
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import { SearchCommand } from '@/components/search-command';
 
 interface Fund {
   id: number;
@@ -15,24 +16,42 @@ interface Fund {
   shortName: string;
 }
 
+const SEARCH_EXAMPLES = [
+  { type: 'Brazilian Stocks', examples: 'PETR4, VALE3, BBAS3' },
+  { type: 'REITs', examples: 'MXRF11, HGLG11' },
+  { type: 'International', examples: 'AAPL, MSFT, GOOGL' },
+  { type: 'Crypto', examples: 'BTC, ETH, BTC-USD' },
+];
+
 export default function MarketPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<StockData[]>([]);
   const [pecentResults, setPecentResults] = useState<StockData[]>([]);
   const [favorites, setFavorites] = useState<Fund[]>([]); 
   const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSearch = async () => {
-    if (!searchQuery) return;
+  const handleSearch = async (symbol: string) => {
+    if (!symbol) return;
+
+    setIsLoading(true);
+    setError('');
 
     try {
-      console.log('searchQuery', searchQuery);
-      const response = await fetch(`/api/stocks?symbol=${searchQuery.toUpperCase()}`);
+      const response = await fetch(`/api/stocks?symbol=${symbol}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch asset data');
+      }
       const data = await response.json();
-      console.log('MarketPage - data', data);
+     
       setSearchResults(data);
     } catch (error) {
-      console.error('Error searching stocks:', error);
+      setError(error instanceof Error ? error.message : 'Failed to fetch asset data');
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -80,16 +99,21 @@ export default function MarketPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-4">Market Overview</h1>
         <div className="flex gap-4">
-          <Input
-            placeholder="Search stocks (e.g., MXRF11)"
+        <SearchCommand onSelect={handleSearch} />
+          {/* <Input
+            placeholder="Search stocks (e.g., PETR4, AAPL, BTC)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value.toUpperCase())}
             className="max-w-md"
-          />
-          <Button onClick={handleSearch}>
-            <Search className="w-4 h-4 mr-2" />
-            Search
-          </Button>
+            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+          /> */}
+          {/* <Button onClick={handleSearch} disabled={isLoading}> */}
+          {/* {isLoading ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+            ) : (
+              <Search className="w-4 h-4 mr-2" />
+            )}
+          </Button> */}
         </div>
       </div>
 

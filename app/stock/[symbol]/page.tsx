@@ -182,7 +182,7 @@ export default function StockPage({ params }: StockPageProps) {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold">{stock.shortName}</h1>
-          <p className="text-xl text-muted-foreground">{stock.symbolSa}</p>
+          <p className="text-xl text-muted-foreground">{stock.symbol}</p>
         </div>
         <div className="flex gap-4">
           <Button
@@ -213,7 +213,7 @@ export default function StockPage({ params }: StockPageProps) {
         <div className="bg-card p-4 rounded-lg border">
           <p className="text-muted-foreground">Monthly Dividend</p>
           <p className="text-2xl font-bold">
-            {stock.lastDividend.toLocaleString('pt-BR', {
+            {stock?.lastDividend.toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
             })}
