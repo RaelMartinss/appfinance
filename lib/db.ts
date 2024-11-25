@@ -8,6 +8,15 @@ interface Favorite {
   shortName: string;
 }
 
+const isFavorite = (row: any): row is Favorite => {
+  return (
+    row &&
+    typeof row.id === "number" &&
+    typeof row.symbol === "string" &&
+    typeof row.shortName === "string"
+  );
+};
+
 const db = new Database("./database.sqlite", (err) => {
   if (err) {
     console.error("Erro ao conectar ao banco de dados:", err);
@@ -23,13 +32,10 @@ const dbGet = (query: string, params: any[]): Promise<Favorite | undefined> => {
     db.get(query, params, (err, row) => {
       if (err) {
         reject(err);
+      } else if (isFavorite(row)) {
+        resolve(row);
       } else {
-        // Verifica se 'row' tem as propriedades esperadas de um 'Favorite'
-        if (row && typeof row.id === "number" && typeof row.symbol === "string" && typeof row.shortName === "string") {
-          resolve(row as Favorite); // Tipo explicitamente convertido para 'Favorite'
-        } else {
-          resolve(undefined); // Caso não seja um 'Favorite', resolve como 'undefined'
-        }
+        resolve(undefined); // Retorna undefined se o formato for inválido
       }
     });
   });
