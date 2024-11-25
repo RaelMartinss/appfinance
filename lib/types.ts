@@ -5,7 +5,7 @@ export interface StockData {
   lastDividend: number;
   pvpRatio: number;
   regularMarketPrice: number;
-  price: string | number;
+  price: number;
   dividend: number;
   shortName: string;
   change: number;
