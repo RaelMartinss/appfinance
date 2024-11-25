@@ -27,13 +27,15 @@ export function TimelineCalculator({ stockData }: TimelineCalculatorProps) {
       return;
     }
 
-    if (monthlyInvestment <= 0 || targetIncome <= 0 || stockData.lastDividend <= 0 || stockData.price <= 0) {
+    const stockPrice = typeof stockData.price === 'number' ? stockData.price : parseFloat(stockData.price);
+
+    if (monthlyInvestment <= 0 || targetIncome <= 0 || stockData.lastDividend <= 0 || stockPrice <= 0) {
       setTimeline(null);
       return;
     }
 
     const sharesNeededForIncome = Math.ceil(targetIncome / stockData.lastDividend);
-    const sharesPerMonth = Math.floor(monthlyInvestment / stockData.price);
+    const sharesPerMonth = Math.floor(monthlyInvestment / stockPrice);
 
     if (sharesPerMonth <= 0) {
       setTimeline(null);
@@ -41,7 +43,7 @@ export function TimelineCalculator({ stockData }: TimelineCalculatorProps) {
     }
 
     const monthsNeeded = Math.ceil(sharesNeededForIncome / sharesPerMonth);
-    const totalInvestment = sharesNeededForIncome * stockData.price;
+    const totalInvestment = sharesNeededForIncome * stockPrice;
 
     setTimeline({
       months: monthsNeeded,
