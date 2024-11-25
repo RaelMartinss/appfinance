@@ -24,7 +24,9 @@ export default function StockPage({ params }: StockPageProps) {
       try {
         const response = await fetch(`/api/stocks?symbol=${params.symbol}`);
         const data = await response.json();
-        setStock(data);
+
+        console.log('StockPage', data);
+        setStock(data[0]);
       } catch (error) {
         console.error('Error fetching stock data:', error);
       }
@@ -194,7 +196,7 @@ export default function StockPage({ params }: StockPageProps) {
         <div className="bg-card p-4 rounded-lg border">
           <p className="text-muted-foreground">Current Price</p>
           <p className="text-2xl font-bold">
-            {stock.price.toLocaleString('pt-BR', {
+          {stock.price.toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
             })}

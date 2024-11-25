@@ -147,7 +147,7 @@ export async function GET(req: Request) {
     const quotes = await yahooFinance.quote(processedSymbols, { return: "map" });
     const historicalDataPromises = processedSymbols.map((symbol) =>
       yahooFinance.historical(symbol, {
-        period1: "2024-08-18", 
+        period1: "2024-01-01", 
         period2: new Date().toISOString().split("T")[0], 
       })
     );
@@ -155,7 +155,7 @@ export async function GET(req: Request) {
 
     const dividendsDataPromises = processedSymbols.map((symbol) =>
       yahooFinance.historical(symbol, {
-        period1: "2024-08-18", 
+        period1: "2024-01-01", 
         period2: new Date().toISOString().split("T")[0], 
         events: "dividends",
       })

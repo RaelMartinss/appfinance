@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 interface StockCardProps {
   symbol: string;
   name: string;
-  price: number;
+  price: number | string;
   change: number;
   changePercent: number;
 }

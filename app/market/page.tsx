@@ -102,7 +102,7 @@ export default function MarketPage() {
                 key={stock.symbol}
                 symbol={stock.symbol}
                 name={stock.shortName}
-                price={stock.price}
+                price={stock.price !== undefined ? stock.price : 0 }
                 change={stock.change}
                 changePercent={stock.changePercent}
               />
