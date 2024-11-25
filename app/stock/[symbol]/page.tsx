@@ -116,23 +116,27 @@ export default function StockPage({ params }: StockPageProps) {
   
   const toggleFavorite = async () => {
     try {
-      if (isFavorite) {
-        await fetch(`/api/favorites?symbol=${stock.symbol}`, {
-          method: "DELETE",
-        });
-        console.log("Removido dos favoritos!");
+      if(stock){
+        if (isFavorite) {
+          await fetch(`/api/favorites?symbol=${stock.symbol}`, {
+            method: "DELETE",
+          });
+          console.log("Removido dos favoritos!");
+        } else {
+          await fetch("/api/favorites", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              symbol: stock.symbol,
+              shortName: stock.shortName,
+            }),
+          });
+          console.log("Adicionado aos favoritos!");
+        }
+        setIsFavorite(!isFavorite);
       } else {
-        await fetch("/api/favorites", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            symbol: stock.symbol,
-            shortName: stock.shortName,
-          }),
-        });
-        console.log("Adicionado aos favoritos!");
+        console.error("Stock data is null, cannot toggle favorite.");
       }
-      setIsFavorite(!isFavorite);
     } catch (error) {
       console.error("Erro ao atualizar favoritos:", error);
     }
@@ -140,23 +144,27 @@ export default function StockPage({ params }: StockPageProps) {
   
   const addToPortfolio = async () => {
     try {
-      if (isPortfolio) {
-        await fetch(`/api/portfolio?symbol=${stock.symbol}`, {
-          method: "DELETE",
+      if (stock) {
+        if (isPortfolio) {
+          await fetch(`/api/portfolio?symbol=${stock.symbol}`, {
+            method: "DELETE",
+          });
+          console.log("Removido do portfólio!");
+        }else {
+        await fetch("/api/portfolio", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            symbol: stock.symbol,
+            shortName: stock.shortName,
+          }),
         });
-        console.log("Removido do portfólio!");
-      }else {
-      await fetch("/api/portfolio", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          symbol: stock.symbol,
-          shortName: stock.shortName,
-        }),
-      });
-      console.log("Adicionado ao portfólio!");
-    }
-    setIsPortfolio(!isPortfolio);
+        console.log("Adicionado ao portfólio!");
+      }
+      setIsPortfolio(!isPortfolio);
+      } else {
+        console.error("Stock data is null, cannot add to portfolio.");
+      }
     } catch (error) {
       console.error("Erro ao adicionar ao portfólio:", error);
     }

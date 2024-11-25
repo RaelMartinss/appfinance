@@ -19,7 +19,7 @@ export default function MarketPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<StockData[]>([]);
   const [pecentResults, setPecentResults] = useState<StockData[]>([]);
-  const [favorites, setFavorites] = useState<any[]>([]); 
+  const [favorites, setFavorites] = useState<Fund[]>([]); 
   const [loading, setLoading] = useState(false)
 
   const handleSearch = async () => {
@@ -42,15 +42,15 @@ export default function MarketPage() {
       setLoading(true);
       try {
         const response = await fetch('/api/favorites');
-        const data: Fund = await response.json();
+        const data: Fund[] = await response.json();
 
         if (Array.isArray(data)) {
           const symbols: string[] = data.map(item => item.symbol);
-          console.log('Symbols ---', symbols)
+
           const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
           const d = await r.json();
           setPecentResults(d)
-          console.log('Stocks data ---', d);
+
         }
         else {
           console.error('Os dados não são uma tabela.');
@@ -63,7 +63,7 @@ export default function MarketPage() {
         if (response.ok) {
           setFavorites(data); // Atualiza o estado com os favoritos
         } else {
-          console.error('Erro ao buscar favoritos:', data.error);
+          console.error('Erro ao buscar favoritos:');
         }
       } catch (error) {
         console.error('Erro ao buscar favoritos:', error);
@@ -145,30 +145,30 @@ export default function MarketPage() {
                         <p className="text-sm text-muted-foreground">{favorite.symbol}</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-medium">
-                        {stockData?.price !== undefined
-                          ? stockData.price.toLocaleString('pt-BR', {
-                              style: 'currency',
-                              currency: 'BRL',
-                            })
-                          : 'Carregando...'}
-                      </p>
-                      <div className="flex items-center gap-1">
-                        {stockData?.changePercent > 0 ? (
-                          <TrendingUp className="w-4 h-4 text-green-500" />
-                        ) : stockData?.changePercent < 0 ? (
-                          <TrendingDown className="w-4 h-4 text-red-500" />
-                        ) : (
-                          <span className="w-4 h-4 text-gray-500" />
-                        )}
-                        <span
-                          className={`text-sm ${stockData?.changePercent > 0 ? 'text-green-500' : 'text-red-500'}`}
-                        >
-                          {stockData?.changePercent?.toFixed(2)}%
-                        </span>
-                      </div>
-                    </div>
+                    <div className="flex items-center gap-1">
+                            {stockData?.changePercent !== undefined ? (
+                              stockData.changePercent > 0 ? (
+                                <TrendingUp className="w-4 h-4 text-green-500" />
+                              ) : stockData.changePercent < 0 ? (
+                                <TrendingDown className="w-4 h-4 text-red-500" />
+                              ) : (
+                                <span className="w-4 h-4 text-gray-500" />
+                              )
+                            ) : (
+                              <span className="w-4 h-4 text-gray-500">-</span>
+                            )}
+                            <span
+                              className={`text-sm ${
+                                stockData?.changePercent !== undefined && stockData.changePercent > 0
+                                  ? 'text-green-500'
+                                  : 'text-red-500'
+                              }`}
+                            >
+                              {stockData?.changePercent !== undefined
+                                ? `${stockData.changePercent.toFixed(2)}%`
+                                : 'N/A'}
+                            </span>
+                          </div>
                   </div>
                 );
               })}
