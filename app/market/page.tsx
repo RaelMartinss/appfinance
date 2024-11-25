@@ -145,19 +145,28 @@ export default function MarketPage() {
                         <p className="text-sm text-muted-foreground">{favorite.symbol}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                            {stockData?.price !== undefined ? (
-                              stockData.changePercent > 0 ? (
+                    <div className="text-right">
+                          <p className="font-medium">
+                            {stockData?.price  !== undefined ? 
+                                          stockData.price.toLocaleString('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL',
+                                  })
+                                : 'Carregando...'}
+                           </p>     
+                           <div className="flex items-center gap-1">
+                              {stockData?.changePercent  !== undefined ? (
+                                stockData?.changePercent > 0 ? (
                                 <TrendingUp className="w-4 h-4 text-green-500" />
-                              ) : stockData.changePercent < 0 ? (
+                                ) : stockData.changePercent < 0 ? (
                                 <TrendingDown className="w-4 h-4 text-red-500" />
-                              ) : (
+                                ) : (
                                 <span className="w-4 h-4 text-gray-500" />
-                              )
-                            ) : (
+                                )
+                              ) : (
                               <span className="w-4 h-4 text-gray-500">-</span>
-                            )}
-                            <span
+                              )}
+                              <span
                               className={`text-sm ${
                                 stockData?.changePercent !== undefined && stockData.changePercent > 0
                                   ? 'text-green-500'
@@ -168,6 +177,7 @@ export default function MarketPage() {
                                 ? `${stockData.changePercent.toFixed(2)}%`
                                 : 'N/A'}
                             </span>
+                            </div>
                           </div>
                   </div>
                 );
