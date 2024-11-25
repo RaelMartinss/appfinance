@@ -146,7 +146,7 @@ export default function MarketPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
-                            {stockData?.changePercent !== undefined ? (
+                            {stockData?.price !== undefined ? (
                               stockData.changePercent > 0 ? (
                                 <TrendingUp className="w-4 h-4 text-green-500" />
                               ) : stockData.changePercent < 0 ? (
