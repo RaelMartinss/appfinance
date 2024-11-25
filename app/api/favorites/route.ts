@@ -57,13 +57,11 @@ export async function DELETE(req: Request) {
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const symbol = searchParams.get("symbol");
-  console.log('GET', symbol);
 
   if (symbol) {
     const favorite = await dbGet("SELECT * FROM favorites WHERE symbol = ?", [symbol]);
 
     if (favorite) {
-      // Agora o TypeScript sabe que favorite é do tipo Favorite ou undefined
       return NextResponse.json({ isFavorite: true });
     }
     else {
@@ -71,9 +69,8 @@ export async function GET(req: Request) {
     }
   }
   else {
-      console.log('SEM O SYMBOL');
       const favorites = await dbAll('SELECT * FROM favorites');
-      console.log('favorites', favorites);
+
       return NextResponse.json(favorites);
   }
 }

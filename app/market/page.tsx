@@ -28,6 +28,7 @@ export default function MarketPage() {
   const [searchResults, setSearchResults] = useState<StockData[]>([]);
   const [pecentResults, setPecentResults] = useState<StockData[]>([]);
   const [favorites, setFavorites] = useState<Fund[]>([]); 
+  const [portfolio, setPortfolio] = useState<Fund[]>([]); 
   const [loading, setLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -56,7 +57,6 @@ export default function MarketPage() {
   };
 
   useEffect(() => {
-    // Função para buscar todos os favoritos
     const fetchFavorites = async () => {
       setLoading(true);
       try {
@@ -74,13 +74,43 @@ export default function MarketPage() {
         else {
           console.error('Os dados não são uma tabela.');
         }
-        // const symbol: string[] = data.map(item => item.symbol)
-
-        // const r = await fetch(`/api/stocks?symbol=${symbol.toUpperCase()}`);
-        // const d = await r.json();
 
         if (response.ok) {
-          setFavorites(data); // Atualiza o estado com os favoritos
+          setFavorites(data);
+        } else {
+          console.error('Erro ao buscar favoritos:');
+        }
+      } catch (error) {
+        console.error('Erro ao buscar favoritos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites(); // Busca os favoritos ao carregar
+  }, []);
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('/api/portfolio');
+        const data: Fund[] = await response.json();
+        console.log('data', data);
+
+        if (Array.isArray(data)) {
+          const symbols: string[] = data.map(item => item.symbol);
+
+          const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
+          const d = await r.json();
+          setPecentResults(d)
+
+        }
+        else {
+          console.error('Os dados não são uma tabela.');
+        }
+
+        if (response.ok) {
+          setPortfolio(data);
         } else {
           console.error('Erro ao buscar favoritos:');
         }
@@ -153,7 +183,6 @@ export default function MarketPage() {
                 const stockData = pecentResults.find(
                   (stock) => stock.symbol === favorite.symbol
                 );
-                console.log('stockData - pecente', stockData);
 
                 return (
                   <div
@@ -212,11 +241,72 @@ export default function MarketPage() {
           )}
         </TabsContent>
 
-
-
         <TabsContent value="portfolio" className="space-y-4">
-          {/* Portfolio content will be populated when implemented */}
-          <p className="text-muted-foreground">Your portfolio is empty</p>
+        {loading ? (
+            <p>Loading...</p> // Indicador de carregamento
+          ) : portfolio.length > 0 ? (
+            <div className="space-y-4">
+              {portfolio.map((portfolio) => {
+                // Procurar o preço correspondente ao símbolo no searchResults
+                const stockDataport = pecentResults.find(
+                  (stock) => stock.symbol === portfolio.symbol
+                );
+
+                return (
+                  <div
+                    key={portfolio.symbol}
+                    className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-lg font-semibold">{portfolio.symbol[0]}</span>
+                      </div>
+                      <div>
+                        <h3 className="font-medium">{portfolio.shortName}</h3>
+                        <p className="text-sm text-muted-foreground">{portfolio.symbol}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                          <p className="font-medium">
+                            {stockDataport?.price  !== undefined ? 
+                                          stockDataport.price.toLocaleString('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL',
+                                  })
+                                : 'Carregando...'}
+                           </p>     
+                           <div className="flex items-center gap-1">
+                              {stockDataport?.changePercent  !== undefined ? (
+                                stockDataport?.changePercent > 0 ? (
+                                <TrendingUp className="w-4 h-4 text-green-500" />
+                                ) : stockDataport.changePercent < 0 ? (
+                                <TrendingDown className="w-4 h-4 text-red-500" />
+                                ) : (
+                                <span className="w-4 h-4 text-gray-500" />
+                                )
+                              ) : (
+                              <span className="w-4 h-4 text-gray-500">-</span>
+                              )}
+                              <span
+                              className={`text-sm ${
+                                stockDataport?.changePercent !== undefined && stockDataport.changePercent > 0
+                                  ? 'text-green-500'
+                                  : 'text-red-500'
+                              }`}
+                            >
+                              {stockDataport?.changePercent !== undefined
+                                ? `${stockDataport.changePercent.toFixed(2)}%`
+                                : 'N/A'}
+                            </span>
+                            </div>
+                          </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-muted-foreground">Your portfolio is empty</p>
+          )}
         </TabsContent>
 
         <TabsContent value="gainers" className="space-y-4">

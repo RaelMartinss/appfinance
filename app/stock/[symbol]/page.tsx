@@ -38,7 +38,8 @@ export default function StockPage({ params }: StockPageProps) {
     return () => clearInterval(interval);
   }, [params.symbol]);
 
-  useLayoutEffect(() => {   
+  useLayoutEffect(() => {  
+
     if (chartContainerRef.current && stock) {
       // Inicialize o gráfico apenas uma vez
       const chart = createChart(chartContainerRef.current, {

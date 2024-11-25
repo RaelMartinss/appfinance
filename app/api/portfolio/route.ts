@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, dbAll, dbGet } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -44,22 +44,18 @@ export async function DELETE(req: Request) {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const symbol = searchParams.get('symbol'); // Pega o símbolo enviado na query string
+  const symbol = searchParams.get('symbol');
 
-  if (!symbol) {
-    return NextResponse.json({ error: 'Símbolo não informado.' }, { status: 400 });
-  }
-
-  try {
-    const favorite = await db.get('SELECT * FROM portfolio WHERE symbol = ?', [symbol]);
+  if (symbol) {
+    const favorite = await dbGet('SELECT * FROM portfolio WHERE symbol = ?', [symbol]);
 
     if (favorite) {
       return NextResponse.json({ isFavorite: true });
     } else {
       return NextResponse.json({ isFavorite: false });
     }
-  } catch (error) {
-    console.error('Erro ao buscar portfolio:', error);
-    return NextResponse.json({ error: 'Erro interno.' }, { status: 500 });
-  }
+  } else {
+    const favorites = await dbAll('SELECT * FROM portfolio');
+    return NextResponse.json(favorites);
+}
 } 
