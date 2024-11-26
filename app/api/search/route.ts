@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import yahooFinance from 'yahoo-finance2';
+import { SearchResults } from '@/lib/types';
+import { isQuoteResult, getAssetType } from '@/utils/function';
 
 const POPULAR_ASSETS = [
   { symbol: 'PETR4.SA', name: 'Petrobras PN', type: 'Brazilian Stock' },
@@ -13,16 +15,6 @@ const POPULAR_ASSETS = [
   { symbol: 'BTC-USD', name: 'Bitcoin USD', type: 'Cryptocurrency' },
   { symbol: 'ETH-USD', name: 'Ethereum USD', type: 'Cryptocurrency' },
 ];
-
-interface QuoteResult {
-  symbol: string;
-  shortname?: string;
-  longname?: string;
-}
-
-interface SearchResults {
-  quotes: (QuoteResult | { isYahooFinance: false })[]; 
-}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -79,18 +71,4 @@ export async function GET(request: Request) {
       )
     );
   }
-}
-
-function isQuoteResult(quote: any): quote is QuoteResult {
-  return typeof quote.symbol === 'string';
-}
-
-function getAssetType(symbol: string): string {
-  if (symbol.endsWith('.SA')) {
-    return symbol.includes('11') ? 'REIT' : 'Brazilian Stock';
-  }
-  if (symbol.endsWith('-USD')) {
-    return 'Cryptocurrency';
-  }
-  return 'International Stock';
 }

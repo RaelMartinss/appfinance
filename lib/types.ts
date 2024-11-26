@@ -36,3 +36,13 @@ interface HistoricalData {
   low: number;
   close: number;
 }
+
+export interface QuoteResult {
+  symbol: string;
+  shortname?: string;
+  longname?: string;
+}
+
+export interface SearchResults {
+  quotes: (QuoteResult | { isYahooFinance: false })[]; 
+}
