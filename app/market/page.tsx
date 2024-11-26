@@ -9,6 +9,7 @@ import { StockCard } from '@/components/stock-card';
 import { StockData } from '@/lib/types';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { SearchCommand } from '@/components/search-command';
+import Link from 'next/link';
 
 interface Fund {
   id: number;
@@ -220,6 +221,9 @@ export default function MarketPage() {
                 );
 
                 return (
+                  <Link
+                  href={`/stock/${stockData?.symbol}`}
+                  key={stockData?.symbol}>
                   <div
                     key={favorite.symbol}
                     className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
@@ -268,6 +272,7 @@ export default function MarketPage() {
                             </div>
                           </div>
                   </div>
+                  </Link>
                 );
               })}
             </div>

@@ -33,8 +33,8 @@ export function StockAnalyzer() {
         throw new Error("Erro ao buscar dados.");
       }
       const data = await response.json();
-      console.log('data', data.regularMarketOpen);
-      setStockData(data);
+      console.log('data', data[0]);
+      setStockData(data[0]);
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to fetch stock data";
@@ -112,7 +112,7 @@ export function StockAnalyzer() {
                 <TrendingUp className="w-4 h-4" />
                 <span>Relação P/VP</span>
               </div>
-              <p className="text-2xl font-bold">{stockData.pvpRatio.toFixed(2)}</p>
+              <p className="text-2xl font-bold">{stockData.pvpRatio ? stockData.pvpRatio.toFixed(2) : 'N/A'}</p>
             </div>
           </div>
         )}

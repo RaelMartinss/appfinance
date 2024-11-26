@@ -196,7 +196,7 @@ export default function StockPage({ params }: StockPageProps) {
           </Button>
           <Button onClick={addToPortfolio}>
             <Plus className="w-4 h-4 mr-2" />
-            {isPortfolio ? "Remove from Watchlist" : "Add to Portfolio"}
+            {isPortfolio ? "Remove from Portfolio" : "Add to Portfolio +"}
           </Button>
         </div>
       </div>
