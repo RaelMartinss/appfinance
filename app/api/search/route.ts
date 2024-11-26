@@ -14,11 +14,14 @@ const POPULAR_ASSETS = [
   { symbol: 'ETH-USD', name: 'Ethereum USD', type: 'Cryptocurrency' },
 ];
 
-interface formattedResults {
+interface QuoteResult {
   symbol: string;
-  longname: string;
-  shortname: string;
-  quotes: []
+  shortname?: string;
+  longname?: string;
+}
+
+interface SearchResults {
+  quotes: (QuoteResult | { isYahooFinance: false })[]; 
 }
 
 export async function GET(request: Request) {
@@ -43,14 +46,17 @@ export async function GET(request: Request) {
     }
 
     // Otherwise, search Yahoo Finance
-    const searchResults = await yahooFinance.search(query, {
+    const searchResults: SearchResults = await yahooFinance.search(query, {
       quotesCount: 5,
       newsCount: 0,
     });
     console.log('searchResults', searchResults);
-    const formattedResults = searchResults.quotes.map(quote => ({
+
+    const formattedResults = searchResults.quotes
+    .filter(isQuoteResult)
+    .map(quote => ({
       symbol: quote.symbol,
-      name: quote.shortname || quote.longname || quote.symbol,
+      name:  quote.shortname || quote.longname || quote.symbol,
       type: getAssetType(quote.symbol),
     }));
 
@@ -73,6 +79,10 @@ export async function GET(request: Request) {
       )
     );
   }
+}
+
+function isQuoteResult(quote: any): quote is QuoteResult {
+  return typeof quote.symbol === 'string';
 }
 
 function getAssetType(symbol: string): string {
