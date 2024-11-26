@@ -6,16 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 import { StockCard } from '@/components/stock-card';
-import { StockData } from '@/lib/types';
+import { ApiResponse, Fund, StockData } from '@/lib/types';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { SearchCommand } from '@/components/search-command';
 import Link from 'next/link';
 
-interface Fund {
-  id: number;
-  symbol: string;
-  shortName: string;
-}
 
 const SEARCH_EXAMPLES = [
   { type: 'Brazilian Stocks', examples: 'PETR4, VALE3, BBAS3' },
@@ -63,22 +58,21 @@ export default function MarketPage() {
       setLoading(true);
       try {
         const response = await fetch('/api/favorites');
-        const data: Fund[] = await response.json();
-
-        if (Array.isArray(data)) {
-          const symbols: string[] = data.map(item => item.symbol);
-
+        const data: ApiResponse = await response.json();
+        console.log('data', data);
+  
+        if (Array.isArray(data.watchlist)) {
+          const symbols: string[] = data.watchlist.map((item) => item.symbol);
+  
           const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
           const d = await r.json();
-          setPecentResults(d)
-
-        }
-        else {
+          setPecentResults(d);
+        } else {
           console.error('Os dados não são uma tabela.');
         }
-
+  
         if (response.ok) {
-          setFavorites(data);
+          setFavorites(data.watchlist); // Corrigido: agora usamos apenas a watchlist
         } else {
           console.error('Erro ao buscar favoritos:');
         }
@@ -88,7 +82,7 @@ export default function MarketPage() {
         setLoading(false);
       }
     };
-
+  
     fetchFavorites(); // Busca os favoritos ao carregar
   }, []);
 
@@ -97,10 +91,10 @@ export default function MarketPage() {
       setLoading(true);
       try {
         const response = await fetch('/api/portfolio');
-        const data: Fund[] = await response.json();
+        const data: ApiResponse = await response.json();
 
-        if (Array.isArray(data)) {
-          const symbols: string[] = data.map(item => item.symbol);
+        if (Array.isArray(data.portfolio)) {
+          const symbols: string[] = data.portfolio.map(item => item.symbol);
 
           const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
           const d = await r.json();
@@ -112,7 +106,7 @@ export default function MarketPage() {
         }
 
         if (response.ok) {
-          setPortfolio(data);
+          setPortfolio(data.portfolio);
         } else {
           console.error('Erro ao buscar favoritos:');
         }
@@ -233,7 +227,7 @@ export default function MarketPage() {
                         <span className="text-lg font-semibold">{favorite.symbol[0]}</span>
                       </div>
                       <div>
-                        <h3 className="font-medium">{favorite.shortName}</h3>
+                        <h3 className="font-medium">{favorite.name}</h3>
                         <p className="text-sm text-muted-foreground">{favorite.symbol}</p>
                       </div>
                     </div>
@@ -302,7 +296,7 @@ export default function MarketPage() {
                         <span className="text-lg font-semibold">{portfolio.symbol[0]}</span>
                       </div>
                       <div>
-                        <h3 className="font-medium">{portfolio.shortName}</h3>
+                        <h3 className="font-medium">{portfolio.name}</h3>
                         <p className="text-sm text-muted-foreground">{portfolio.symbol}</p>
                       </div>
                     </div>
@@ -370,7 +364,7 @@ export default function MarketPage() {
                         <span className="text-lg font-semibold">{topGaners.symbol[0]}</span>
                       </div>
                       <div>
-                        <h3 className="font-medium">{topGaners.shortName}</h3>
+                        <h3 className="font-medium">{topGaners.name}</h3>
                         <p className="text-sm text-muted-foreground">{topGaners.symbol}</p>
                       </div>
                     </div>

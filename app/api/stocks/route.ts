@@ -177,7 +177,6 @@ export async function GET(req: Request) {
     // Preparar os dados de retorno para cada símbolo
     const responseData = processedSymbols.map((symbol, index) => {
       const quote = quotes.get(symbol);
-      console.log('quote', quote);
       const dividends = dividendsDataResults[index] || [];
       const lastDividend = dividends.length ? dividends[dividends.length - 1] : null;
       return {

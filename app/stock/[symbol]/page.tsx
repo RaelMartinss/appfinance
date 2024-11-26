@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { createChart } from 'lightweight-charts';
 import { Button } from '@/components/ui/button';
 import { Star, Plus } from 'lucide-react';
 import { StockData } from '@/lib/types';
+import { toast } from 'sonner';
 
 interface StockPageProps {
   params: {
@@ -13,6 +15,7 @@ interface StockPageProps {
 }
 
 export default function StockPage({ params }: StockPageProps) {
+  const router = useRouter();
   const [stock, setStock] = useState<StockData | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isPortfolio, setIsPortfolio] = useState(false);
@@ -118,58 +121,72 @@ export default function StockPage({ params }: StockPageProps) {
   const toggleFavorite = async () => {
     try {
       if(stock){
+        console.log('stock already', stock);
         if (isFavorite) {
+          console.log('stock already DELETE', isFavorite);
           await fetch(`/api/favorites?symbol=${stock.symbol}`, {
             method: "DELETE",
           });
-          console.log("Removido dos favoritos!");
+          toast.info("Removido dos favoritos!");
         } else {
-          await fetch("/api/favorites", {
+          console.log('stock already POST', isFavorite);
+          const response = await fetch("/api/favorites", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               symbol: stock.symbol,
-              shortName: stock.shortName,
+              name: stock.shortName,
             }),
           });
-          console.log("Adicionado aos favoritos!");
+
+          if (!response.ok) {
+            throw new Error('Failed to update portfolio');
+          }
+
+          toast.success("Adicionado aos favoritos!");
         }
         setIsFavorite(!isFavorite);
       } else {
-        console.error("Stock data is null, cannot toggle favorite.");
+        toast.error("Stock data is null, cannot toggle favorite.");
       }
     } catch (error) {
       console.error("Erro ao atualizar favoritos:", error);
     }
   };
-  
-  const addToPortfolio = async () => {
-    try {
-      if (stock) {
-        if (isPortfolio) {
-          await fetch(`/api/portfolio?symbol=${stock.symbol}`, {
-            method: "DELETE",
-          });
-          console.log("Removido do portfólio!");
-        }else {
-        await fetch("/api/portfolio", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            symbol: stock.symbol,
-            shortName: stock.shortName,
-          }),
-        });
-        console.log("Adicionado ao portfólio!");
-      }
-      setIsPortfolio(!isPortfolio);
-      } else {
-        console.error("Stock data is null, cannot add to portfolio.");
-      }
-    } catch (error) {
-      console.error("Erro ao adicionar ao portfólio:", error);
+
+  const addToPortfolio = () => {
+    if (stock) {
+      router.push(`/portfolio?symbol=${params.symbol}&price=${stock.price}&name=${encodeURIComponent(stock.shortName)}`);
     }
   };
+  
+  // const addToPortfolio = async () => {
+  //   try {
+  //     if (stock) {
+  //       if (isPortfolio) {
+  //         await fetch(`/api/portfolio?symbol=${stock.symbol}`, {
+  //           method: "DELETE",
+  //         });
+  //         console.log("Removido do portfólio!");
+  //       }else {
+  //       await fetch("/api/portfolio", {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({
+  //           symbol: stock.symbol,
+  //           shortName: stock.shortName,
+  //         }),
+  //       });
+  //       console.log("Adicionado ao portfólio!");
+  //     }
+  //     setIsPortfolio(!isPortfolio);
+  //     } else {
+  //       console.error("Stock data is null, cannot add to portfolio.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Erro ao adicionar ao portfólio:", error);
+  //   }
+  // };
 
   
   
@@ -196,7 +213,7 @@ export default function StockPage({ params }: StockPageProps) {
           </Button>
           <Button onClick={addToPortfolio}>
             <Plus className="w-4 h-4 mr-2" />
-            {isPortfolio ? "Remove from Portfolio" : "Add to Portfolio +"}
+              Add to Portfolio
           </Button>
         </div>
       </div>

@@ -1,44 +1,39 @@
 "use client";
 
+import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 
 interface Asset {
   id: number;
-  purchaseDate: Date;
-  group: string;
-  ticker: string;
-  shares: number;
+  lastUpdate: string;
+  assetType: string;
+  symbol: string;
+  quantity: number;
   averagePrice: number;
 }
 
-const mockAssets: Asset[] = [
-  {
-    id: 1,
-    purchaseDate: new Date('2024-01-15'),
-    group: 'FII',
-    ticker: 'MXRF11',
-    shares: 100,
-    averagePrice: 9.80,
-  },
-  {
-    id: 2,
-    purchaseDate: new Date('2024-02-01'),
-    group: 'Stock',
-    ticker: 'PETR4',
-    shares: 50,
-    averagePrice: 34.25,
-  },
-  {
-    id: 3,
-    purchaseDate: new Date('2024-02-15'),
-    group: 'Crypto',
-    ticker: 'BTC',
-    shares: 0.05,
-    averagePrice: 250000.00,
-  },
-];
+interface ApiResponse {
+  portfolio: Asset[];
+}
 
 export function AssetsTable() {
+  const [assets, setAssets] = useState<Asset[]>([]);
+
+  useEffect(() => {
+    const fetchPortfolioHome = async () => {
+      const response = await fetch('/api/portfolio');
+      const data: ApiResponse = await response.json();
+      console.log(data);  // Verifique os dados retornados pela API
+      setAssets(data.portfolio);  // Atualiza os dados no estado
+    };
+    fetchPortfolioHome();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? 'Data inválida' : format(date, 'dd/MM/yyyy');
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
@@ -53,22 +48,24 @@ export function AssetsTable() {
           </tr>
         </thead>
         <tbody>
-          {mockAssets.map((asset) => (
+          {assets.map((asset: Asset) => (
             <tr key={asset.id} className="border-b hover:bg-muted/50">
               <td className="p-4">
-                {format(asset.purchaseDate, 'dd/MM/yyyy')}
+                {formatDate(asset.lastUpdate)} {/* Usando a função para formatar a data */}
               </td>
-              <td className="p-4">{asset.group}</td>
-              <td className="p-4">{asset.ticker}</td>
-              <td className="p-4 text-right">{asset.shares.toLocaleString()}</td>
+              <td className="p-4">{asset.assetType}</td>
+              <td className="p-4">{asset.symbol}</td>
               <td className="p-4 text-right">
-                {asset.averagePrice.toLocaleString('pt-BR', {
+                {asset.quantity?.toLocaleString() || '0'} {/* Verificando se shares é válido */}
+              </td>
+              <td className="p-4 text-right">
+                {asset.averagePrice?.toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL',
-                })}
+                }) || 'R$ 0,00'} {/* Verificando se averagePrice é válido */}
               </td>
               <td className="p-4 text-right">
-                {(asset.shares * asset.averagePrice).toLocaleString('pt-BR', {
+                {((asset.quantity || 0) * (asset.averagePrice || 0)).toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL',
                 })}

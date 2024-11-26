@@ -1,3 +1,5 @@
+import { NotNull } from "drizzle-orm";
+
 export interface StockData {
   symbol: string;
   currentPrice: number;
@@ -45,4 +47,28 @@ export interface QuoteResult {
 
 export interface SearchResults {
   quotes: (QuoteResult | { isYahooFinance: false })[]; 
+
+}
+export interface ApiResponse {
+  portfolio: Fund[];
+  watchlist: Watchlist[];
+}
+
+export interface Fund {
+  id: number;
+  symbol: string;
+  name: string;
+  assetType?: string;
+  quantity?: number;
+  price?: number;
+  currentPrice?: number;
+  total?: number;
+  date?: Date;
+}
+
+interface Watchlist extends Fund {
+  id: number;
+  symbol: string;
+  name: string;
+  addedAt: string;
 }
