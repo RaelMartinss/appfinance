@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -34,7 +34,7 @@ const assetTypes = [
   { value: 'others', label: 'Outros' },
 ];
 
-export default function PortfolioPage() {
+function PortfolioContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol') || '';
@@ -312,5 +312,13 @@ export default function PortfolioPage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+export default function PortfolioPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PortfolioContent />
+    </Suspense>
   );
 }
