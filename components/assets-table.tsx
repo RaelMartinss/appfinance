@@ -36,8 +36,8 @@ export function AssetsTable() {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full">
+    <div className="overflow-x-auto -mx-4 lg:mx-0">
+      <table className="min-w-full px-4 lg:px-0">
         <thead>
           <tr className="border-b">
             <th className="text-left p-4">Purchase Date</th>

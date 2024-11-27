@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Sidebar } from '@/components/sidebar';
+import { MobileNav } from '@/components/mobile-nav';
 import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -26,9 +27,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex h-screen">
+          <div className="flex flex-col lg:flex-row min-h-screen">
             <Sidebar />
-            <main className="flex-1 overflow-y-auto bg-background">
+            <MobileNav />
+            <main className="flex-1 overflow-y-auto bg-background pt-16 lg:pt-0">
               {children}
             </main>
           </div>
