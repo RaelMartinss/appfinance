@@ -27,7 +27,7 @@ export function TimelineCalculator({ stockData }: TimelineCalculatorProps) {
       return;
     }
 
-    const stockPrice = typeof stockData.price === 'number' ? stockData.price : parseFloat(stockData.price);
+    const stockPrice = stockData.price ?? 0
 
     if (monthlyInvestment <= 0 || targetIncome <= 0 || stockData.lastDividend <= 0 || stockPrice <= 0) {
       setTimeline(null);
