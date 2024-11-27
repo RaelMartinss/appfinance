@@ -39,7 +39,7 @@ function PortfolioContent() {
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol') || '';
   const price = parseFloat(searchParams.get('price') || '0');
-  const shortName = searchParams.get('name') || '';
+  const name = searchParams.get('name') || '';
 
   const [assetType, setAssetType] = useState('');
   const [quantity, setQuantity] = useState('1');
@@ -63,21 +63,21 @@ function PortfolioContent() {
         },
         body: JSON.stringify({
           symbol,
-          shortName,
+          name,
           type,
           assetType,
           quantity: parseFloat(quantity),
           price,
           date: date.toISOString(),
+          userId: 1
         }),
       });
 
+      const data = await response.json();
       if (!response.ok) {
         throw new Error('Failed to update portfolio');
       }
-      const data = await response.json();
-
-      console.log('setIsSubmitting - data', data);
+      
 
       toast.success(
         type === 'buy' 
@@ -102,7 +102,7 @@ function PortfolioContent() {
             <span className="text-xl font-semibold">{symbol[0]}</span>
           </div>
           <div>
-            <h2 className="font-semibold">{shortName}</h2>
+            <h2 className="font-semibold">{name}</h2>
             <p className="text-sm text-muted-foreground">{symbol}</p>
           </div>
         </div>

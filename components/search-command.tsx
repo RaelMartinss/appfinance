@@ -39,7 +39,6 @@ export function SearchCommand({ onSelect }: SearchCommandProps) {
       const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
       if (!response.ok) throw new Error('Failed to fetch search results');
       const data = await response.json();
-      console.log('data', data);
       setResults(data);
     } catch (error) {
       console.error('Search error:', error);

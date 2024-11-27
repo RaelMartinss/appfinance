@@ -25,15 +25,12 @@ export function StockAnalyzer() {
     setError("");
 
     try {
-      console.log("stockSymbol", stockSymbol);
-      // const data = await fetchStockData(stockSymbol);
       const response = await fetch(`/api/stocks?symbol=${stockSymbol.toUpperCase()}`);
-      console.log('response', response);
+
       if (!response.ok) {
         throw new Error("Erro ao buscar dados.");
       }
       const data = await response.json();
-      console.log('data', data);
       setStockData(data[0]);
 
     } catch (err) {

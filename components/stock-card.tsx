@@ -18,19 +18,15 @@ export function StockCard({ symbol, name, price, change, changePercent }: StockC
   const [currentChange, setCurrentChange] = useState(change || 0);
   const [currentChangePercent, setCurrentChangePercent] = useState(changePercent || 0);
 
-  console.log('StockCard - symbol', symbol)
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
        
         const response = await fetch(`/api/stocks?symbol=${symbol.toUpperCase()}`);
-        console.log('response', response);
+
         const data = await response.json();
 
-        console.log('data', data);
-
         setCurrentPrice(data.price);
-        console.log('setCurrentPrice', setCurrentPrice)
 
         setCurrentChange(data.change);
         setCurrentChangePercent(data.changePercent);

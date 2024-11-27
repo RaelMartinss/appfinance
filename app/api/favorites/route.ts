@@ -1,76 +1,71 @@
-import { db, dbGet, dbAll } from "@/lib/db";
+import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-// Função auxiliar para tratar db.run como uma Promise
-const dbRun = (query: string, params: any[]) => {
-  return new Promise<void>((resolve, reject) => {
-    db.run(query, params, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
+const prisma = new PrismaClient();
+
+export async function POST(request: Request) {
+  try {
+    const { symbol, name, userId } = await request.json();
+
+    if (!symbol || !name || !userId) {
+      return new Response("Campos obrigatórios estão ausentes.", { status: 400 });
+    }
+
+    const existingFavorite = await prisma.favoritos.findFirst({
+      where: {
+        symbol,
+        userId,
+      },
     });
-  });
-};
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  console.log('body', body);
-  const { symbol, shortName }: { symbol: string; shortName: string } = body;
-
-  console.log('symbol', symbol);
-
-  if (!symbol || !shortName) {
-    return NextResponse.json({ error: "Dados incompletos." }, { status: 400 });
-  }
-
-  try {
-    await dbRun(
-      `INSERT OR IGNORE INTO favorites (symbol, shortName) VALUES (?, ?)`,
-      [symbol, shortName]
-    );
-    return NextResponse.json({ message: "Adicionado aos favoritos!" });
-  } catch (err) {
-    console.error("Erro ao adicionar favorito:", err);
-    return NextResponse.json({ error: "Erro ao salvar no banco." }, { status: 500 });
-  }
-};
-
-export async function DELETE(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const symbol = searchParams.get("symbol");
-
-  if (!symbol) {
-    return NextResponse.json({ error: "Símbolo não fornecido." }, { status: 400 });
-  }
-
-  try {
-    await dbRun(`DELETE FROM favorites WHERE symbol = ?`, [symbol]);
-    return NextResponse.json({ message: "Removido dos favoritos!" });
-  } catch (err) {
-    console.error("Erro ao remover favorito:", err);
-    return NextResponse.json({ error: "Erro ao deletar no banco." }, { status: 500 });
-  }
-};
-
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const symbol = searchParams.get("symbol");
-
-  if (symbol) {
-    const favorite = await dbGet("SELECT * FROM favorites WHERE symbol = ?", [symbol]);
-
-    if (favorite) {
-      return NextResponse.json({ isFavorite: true });
+    if (existingFavorite) {
+      return new Response("Este ativo já está nos favoritos.", { status: 400 });
     }
-    else {
-      return NextResponse.json({ isFavorite: false });
-    }
-  }
-  else {
-      const favorites = await dbAll('SELECT * FROM favorites');
+    
+    const favorite = await prisma.favoritos.create({
+      data: {
+        symbol,
+        name,
+        user: {
+          connect: { id: userId },
+        },
+      },
+    });
 
-      return NextResponse.json(favorites);
+    return new Response(JSON.stringify(favorite), { status: 201 });
+  } catch (error) {
+    console.error("Erro ao adicionar favorito:", error);
+    return new Response("Erro interno no servidor.", { status: 500 });
+  }
+}
+
+
+export async function GET(request: Request) {
+  try {
+    const url = new URL(request.url);
+    const userId = url.searchParams.get("userId");
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: "Parâmetro userId é obrigatório" }),
+        { status: 400 }
+      );
+    }
+
+    // Busca os favoritos do usuário
+    const favoritos = await prisma.favoritos.findMany({
+      where: {
+        userId: Number(userId),
+      },
+    });
+
+    if (favoritos.length === 0) {
+      return new Response("Nenhum favorito encontrado", { status: 404 });
+    }
+
+    return NextResponse.json(favoritos);
+  } catch (error) {
+    console.error("Erro ao buscar os favoritos:", error);
+    return new Response("Erro interno ao buscar os favoritos", { status: 500 });
   }
 }

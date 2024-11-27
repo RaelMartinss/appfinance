@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 interface StockPageProps {
   params: {
     symbol: string;
+    name: string;
   };
 }
 
@@ -80,7 +81,18 @@ export default function StockPage({ params }: StockPageProps) {
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       try {
-        const response = await fetch(`/api/favorites?symbol=${params.symbol}`);
+        const response = await fetch('/api/favorites', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            symbol: params.symbol,
+            name: params.name,
+            userId: 1,
+          }),
+        });
+
         const data = await response.json();
   
         if (response.ok) {
@@ -94,7 +106,7 @@ export default function StockPage({ params }: StockPageProps) {
     };
   
     fetchFavoriteStatus();
-  }, [params.symbol]);
+  }, [params.symbol, params.name]);
 
   useEffect(() => {
     const fetchPortfolioStatus = async () => {
@@ -119,22 +131,19 @@ export default function StockPage({ params }: StockPageProps) {
   const toggleFavorite = async () => {
     try {
       if(stock){
-        console.log('stock already', stock);
-        console.log('isFavorite', isFavorite);
         if (isFavorite) {
-          console.log('stock already DELETE', isFavorite);
           await fetch(`/api/favorites?symbol=${stock.symbol}`, {
             method: "DELETE",
           });
           toast.info("Removido dos favoritos!");
         } else {
-          console.log('stock already POST', isFavorite);
           const response = await fetch("/api/favorites", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               symbol: stock.symbol,
-              shortName: stock.shortName,
+              name: stock.shortName,
+              userId: 1,
             }),
           });
 
@@ -158,37 +167,7 @@ export default function StockPage({ params }: StockPageProps) {
       router.push(`/portfolio?symbol=${params.symbol}&price=${stock.price}&name=${encodeURIComponent(stock.shortName)}`);
     }
   };
-  
-  // const addToPortfolio = async () => {
-  //   try {
-  //     if (stock) {
-  //       if (isPortfolio) {
-  //         await fetch(`/api/portfolio?symbol=${stock.symbol}`, {
-  //           method: "DELETE",
-  //         });
-  //         console.log("Removido do portfólio!");
-  //       }else {
-  //       await fetch("/api/portfolio", {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({
-  //           symbol: stock.symbol,
-  //           shortName: stock.shortName,
-  //         }),
-  //       });
-  //       console.log("Adicionado ao portfólio!");
-  //     }
-  //     setIsPortfolio(!isPortfolio);
-  //     } else {
-  //       console.error("Stock data is null, cannot add to portfolio.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Erro ao adicionar ao portfólio:", error);
-  //   }
-  // };
 
-  
-  
 
   if (!stock) {
     return <div className="p-6">Loading...</div>;

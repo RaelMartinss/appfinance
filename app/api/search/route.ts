@@ -42,7 +42,6 @@ export async function GET(request: Request) {
       quotesCount: 5,
       newsCount: 0,
     });
-    console.log('searchResults', searchResults);
 
     const formattedResults = searchResults.quotes
     .filter(isQuoteResult)

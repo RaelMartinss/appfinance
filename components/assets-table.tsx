@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { Fund } from '@/lib/types';
+import { Fund, Portfolio } from '@/lib/types';
 
 interface Asset {
   id: number;
@@ -18,21 +18,25 @@ interface ApiResponse {
 }
 
 export function AssetsTable() {
-  const [assets, setAssets] = useState<Fund[]>([]);
-
+  const [assets, setAssets] = useState<Portfolio[]>([]);
+  const userId: number = 1;
   useEffect(() => {
     const fetchPortfolioHome = async () => {
-      const response = await fetch('/api/portfolio');
-      const data: Fund[] = await response.json();
-      console.log(data);  // Verifique os dados retornados pela API
+      const response = await fetch(`/api/portfolio?userId=${userId}`);
+      const data = await response.json();
+      
       setAssets(data);  // Atualiza os dados no estado
     };
     fetchPortfolioHome();
-  }, []);
+  }, [userId]);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return isNaN(date.getTime()) ? 'Data inválida' : format(date, 'dd/MM/yyyy');
+  const formatDate = (date: string | Date): string => {
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+    return dateObj.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
   };
 
   return (
@@ -52,21 +56,21 @@ export function AssetsTable() {
           {assets.map((asset) => (
             <tr key={asset.id} className="border-b hover:bg-muted/50">
               <td className="p-4">
-                {formatDate(asset.last_update)} {/* Usando a função para formatar a data */}
+                {formatDate(new Date(asset.lastUpdate))} {/* Usando a função para formatar a data */}
               </td>
-              <td className="p-4">{asset.asset_type}</td>
+              <td className="p-4">{asset.assetType}</td>
               <td className="p-4">{asset.symbol}</td>
               <td className="p-4 text-right">
                 {asset.quantity?.toLocaleString() || '0'} {/* Verificando se shares é válido */}
               </td>
               <td className="p-4 text-right">
-                {asset.average_price?.toLocaleString('pt-BR', {
+                {asset.averagePrice?.toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL',
                 }) || 'R$ 0,00'} {/* Verificando se averagePrice é válido */}
               </td>
               <td className="p-4 text-right">
-                {((asset.quantity || 0) * (asset.average_price || 0)).toLocaleString('pt-BR', {
+                {((asset.quantity || 0) * (asset.averagePrice || 0)).toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL',
                 })}

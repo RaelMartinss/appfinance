@@ -23,12 +23,15 @@ export default function MarketPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<StockData[]>([]);
   const [pecentResults, setPecentResults] = useState<StockData[]>([]);
+  const [pecentResultsFavoritos, setPecentResultsFavoritos] = useState<StockData[]>([]);
   const [favorites, setFavorites] = useState<Fund[]>([]); 
   const [portfolio, setPortfolio] = useState<Fund[]>([]);
   const [topGaners, setTopGaners] = useState<Fund[]>([]); 
   const [loading, setLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const userId: number = 1;
 
   const handleSearch = async (symbol: string) => {
     if (!symbol) return;
@@ -56,43 +59,41 @@ export default function MarketPage() {
   useEffect(() => {
     const fetchFavorites = async () => {
       setLoading(true);
-      try {
-        const response = await fetch('/api/favorites');
-        const data: Fund[] = await response.json();
-        console.log('data- fff', data);
-  
-        if (Array.isArray(data)) {
-          const symbols: string[] = data.map((item) => item.symbol);
-  
-          const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
-          const d = await r.json();
-          setPecentResults(d);
-        } else {
-          console.error('Os dados não são uma tabela.');
+        try {
+          const response = await fetch(`/api/favorites?userId=${userId}`);
+          const data: Fund[] = await response.json();
+    
+          if (Array.isArray(data)) {
+            const symbols: string[] = data.map((item) => item.symbol);
+    
+            const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
+            const d = await r.json();
+            setPecentResultsFavoritos(d);
+          } else {
+            console.error('Os dados não são uma tabela.');
+          }
+    
+          if (response.ok) {
+            setFavorites(data); // Corrigido: agora usamos apenas a watchlist
+          } else {
+            console.error('Erro ao buscar favoritos:');
+          }
+        } catch (error) {
+          console.error('Erro ao buscar favoritos:', error);
+        } finally {
+          setLoading(false);
         }
-  
-        if (response.ok) {
-          setFavorites(data); // Corrigido: agora usamos apenas a watchlist
-        } else {
-          console.error('Erro ao buscar favoritos:');
-        }
-      } catch (error) {
-        console.error('Erro ao buscar favoritos:', error);
-      } finally {
-        setLoading(false);
-      }
     };
   
     fetchFavorites(); // Busca os favoritos ao carregar
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
       setLoading(true);
       try {
-        const response = await fetch('/api/portfolio');
+        const response = await fetch(`/api/portfolio?userId=${userId}`);
         const data: Fund[] = await response.json();
-        console.log('data- portfolio', data);
 
         if (Array.isArray(data)) {
           const symbols: string[] = data.map(item => item.symbol);
@@ -119,14 +120,13 @@ export default function MarketPage() {
     };
 
     fetchPortfolio();
-  }, []);
+  }, [userId]);
   useEffect(() => {
     const topGainersLosers = async () => {
       setLoading(true);
       try {
         const response = await fetch('/api/gainers');
         const data: Fund[] = await response.json();
-        console.log('data - gainers', data);
 
         if (Array.isArray(data)) {
           const symbols: string[] = data.map(item => item.symbol);
@@ -161,20 +161,6 @@ export default function MarketPage() {
         <h1 className="text-3xl font-bold mb-4">Market Overview</h1>
         <div className="flex gap-4">
         <SearchCommand onSelect={handleSearch} />
-          {/* <Input
-            placeholder="Search stocks (e.g., PETR4, AAPL, BTC)"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value.toUpperCase())}
-            className="max-w-md"
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-          /> */}
-          {/* <Button onClick={handleSearch} disabled={isLoading}> */}
-          {/* {isLoading ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-            ) : (
-              <Search className="w-4 h-4 mr-2" />
-            )}
-          </Button> */}
         </div>
       </div>
 
@@ -211,10 +197,9 @@ export default function MarketPage() {
             <div className="space-y-4">
               {favorites.map((favorite) => {
                 // Procurar o preço correspondente ao símbolo no searchResults
-                const stockData = pecentResults.find(
+                const stockData = pecentResultsFavoritos.find(
                   (stock) => stock.symbol === favorite.symbol
                 );
-                
                 return (
                   <Link
                   href={`/stock/${stockData?.symbol}`}
@@ -228,7 +213,7 @@ export default function MarketPage() {
                         <span className="text-lg font-semibold">{favorite.symbol[0]}</span>
                       </div>
                       <div>
-                        <h3 className="font-medium">{favorite.shortName}</h3>
+                        <h3 className="font-medium">{favorite.name}</h3>
                         <p className="text-sm text-muted-foreground">{favorite.symbol}</p>
                       </div>
                     </div>
@@ -288,6 +273,9 @@ export default function MarketPage() {
                 );
 
                 return (
+                  <Link
+                  href={`/stock/${stockDataport?.symbol}`}
+                  key={stockDataport?.symbol}>
                   <div
                     key={portfolio.symbol}
                     className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
@@ -336,6 +324,7 @@ export default function MarketPage() {
                             </div>
                           </div>
                   </div>
+                  </Link>
                 );
               })}
             </div>

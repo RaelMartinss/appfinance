@@ -20,17 +20,11 @@ export function InvestmentCalculator({ stockData }: InvestmentCalculatorProps) {
     value: string
   ) => {
     if (!stockData) return;
-    console.log("stockData: ", stockData)
-
     const numValue = parseFloat(value);
     if (isNaN(numValue) || numValue <= 0) return;
 
     const monthlyDividend = stockData.lastDividend;
-    // const sharePrice = typeof stockData.price === 'number' ? stockData.price : parseFloat(stockData.price);
     const sharePrice= stockData.price ?? 0
-
-    console.log('sharePrice', sharePrice)
-    console.log('monthlyDividend', monthlyDividend)
 
     switch (type) {
       case "shares":

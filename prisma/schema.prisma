@@ -1,0 +1,71 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_POST")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String    /// Senha armazenada com hash (não texto puro!)
+  name      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relacionamentos
+  transactions Transaction[]
+  portfolio    Portfolio[]
+  favoritos    Favoritos[]
+
+  @@map("users")
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  symbol    String
+  name      String
+  type      String   /// Define o tipo da transação: "buy" (compra) ou "sell" (venda)
+  assetType String   @map("asset_type")
+  quantity  Decimal  /// Quantidade de ativos (mais preciso que Float)
+  price     Decimal  /// Preço por unidade
+  total     Decimal  /// Valor total
+  date      DateTime @default(now())
+
+  userId    Int      /// Chave estrangeira para o usuário
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+  @@index([symbol]) // Índice para melhorar buscas por 'symbol'
+}
+
+model Portfolio {
+  id           Int      @id @default(autoincrement())
+  symbol       String   @unique
+  name         String
+  assetType    String   @map("asset_type")
+  quantity     Decimal  /// Quantidade total no portfólio
+  averagePrice Decimal  @map("average_price") /// Preço médio
+  currentPrice Decimal  @map("current_price") /// Preço atual
+  lastUpdate   DateTime @default(now()) @map("last_update")
+
+  userId       Int      /// Chave estrangeira para o usuário
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("portfolio")
+}
+
+model Favoritos {
+  id      Int      @id @default(autoincrement())
+  symbol  String   @unique
+  name    String
+  addedAt DateTime @default(now()) @map("added_at")
+
+  userId  Int      /// Chave estrangeira para o usuário
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("favoritos")
+}

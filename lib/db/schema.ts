@@ -5,11 +5,11 @@
 //   id: integer('id').primaryKey({ autoIncrement: true }),
 //   symbol: text('symbol').notNull(),
 //   name: text('name').notNull(),
-//   type: text('type'), // buy or sell
-//   assetType: text('asset_type'),
-//   quantity: real('quantity'),
-//   price: real('price'),
-//   total: real('total'),
+//   type: text('type').notNull(), // buy or sell
+//   assetType: text('asset_type').notNull(),
+//   quantity: real('quantity').notNull(),
+//   price: real('price').notNull(),
+//   total: real('total').notNull(),
 //   date: integer('date', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
 // });
 

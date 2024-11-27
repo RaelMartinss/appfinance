@@ -6,23 +6,32 @@ import {
   Legend,
   ChartData,
 } from 'chart.js';
-import { ApiResponse, Fund } from '@/lib/types';
+import { ApiResponse, Fund, Portfolio } from '@/lib/types';
 import { useEffect, useState } from 'react';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function PortfolioAllocation() {
-  const [portfolio, setPortfolio] = useState<Fund[]>([]);
+  const [portfolio, setPortfolio] = useState<Portfolio[]>([]);
+  const userId: number = 1;
 
   useEffect(() => {
     const fetchPortfolioHome = async () => {
-      const response = await fetch('/api/portfolio');
-      const data: Fund[] = await response.json();
-      console.log(data);
-      setPortfolio(data);
+      try {
+        const response = await fetch(`/api/portfolio?userId=${userId}`);
+        
+        if (!response.ok) {
+          throw new Error(`Erro ao buscar o portfólio: ${response.statusText}`);
+        }
+        const data = await response.json();
+
+        setPortfolio(data);
+      } catch (error) {
+        console.error("Erro ao buscar o portfólio:", error);
+      }  
     }
     fetchPortfolioHome();
-  }, []);
+  }, [userId]);
 
   // Função para mapear os dados do portfolio e calcular a alocação
   const calculateAllocation = () => {
@@ -36,18 +45,18 @@ export function PortfolioAllocation() {
   
     portfolio.forEach((item) => {
       const quantity = item.quantity ?? 0;  // Atribui 0 se quantity for undefined
-      const currentPrice = item.current_price ?? 0;  // Atribui 0 se currentPrice for undefined
+      const currentPrice = item.currentPrice ?? 0;  // Atribui 0 se currentPrice for undefined
   
       // Agora, usa quantity e currentPrice com a garantia de que não são indefinidos
-      if (item.asset_type === 'fiis') {
+      if (item.assetType === 'fiis') {
         allocation.fiis += quantity * currentPrice;
-      } else if (item.asset_type === 'stocks') {
+      } else if (item.assetType === 'stocks') {
         allocation.stocks += quantity * currentPrice;
-      } else if (item.asset_type === 'crypto') {
+      } else if (item.assetType === 'crypto') {
         allocation.crypto += quantity * currentPrice;
-      } else if (item.asset_type === 'international') {
+      } else if (item.assetType === 'international') {
         allocation.international += quantity * currentPrice;
-      } else if (item.asset_type === 'fixedIncome') {
+      } else if (item.assetType === 'fixedIncome') {
         allocation.fixedIncome += quantity * currentPrice;
       }
     });

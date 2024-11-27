@@ -83,3 +83,68 @@ export interface PortfolioPosition {
   currentPrice: number;
   lastUpdate: string;
 }
+
+
+export interface User {
+  id: number;
+  email: string;
+  password: string; 
+  name?: string; 
+  createdAt: Date; 
+  updatedAt: Date; 
+
+  // Relacionamentos
+  transactions?: Transaction[]; 
+  portfolio?: Portfolio[];     
+  watchlist?: Favoritos[]; 
+}
+
+export interface Transaction {
+  id: number;
+  symbol: string;       // Símbolo do ativo (ex: "AAPL")
+  name: string;         // Nome do ativo (ex: "Apple Inc.")
+  type: 'buy' | 'sell'; // Tipo da transação
+  assetType: string;    // Tipo do ativo (ex: "stocks", "fiis")
+  quantity: number;     // Quantidade negociada
+  price: number;        // Preço por unidade
+  total: number;        // Valor total da transação
+  date: Date;           // Data da transação
+
+  userId: number;       // Relacionamento: ID do usuário
+  user?: User;          // Objeto do usuário associado (opcional)
+}
+
+export interface Portfolio {
+  id: number;
+  symbol: string;       // Símbolo do ativo (ex: "AAPL")
+  name: string;         // Nome do ativo (ex: "Apple Inc.")
+  assetType: string;    // Tipo do ativo (ex: "stocks", "fiis")
+  quantity: number;     // Quantidade total no portfólio
+  averagePrice: number; // Preço médio do ativo no portfólio
+  currentPrice: number; // Preço atual do ativo
+  lastUpdate: Date;     // Última atualização do portfólio
+  last_update: string;
+
+  userId: number;       // Relacionamento: ID do usuário
+  user?: User;          // Objeto do usuário associado (opcional)
+}
+
+export interface Favoritos {
+  id: number;
+  symbol: string;   // Símbolo do ativo (ex: "AAPL")
+  name: string;     // Nome do ativo (ex: "Apple Inc.")
+  addedAt: Date;    // Data em que o ativo foi adicionado aos favoritos
+
+  userId: number;   // Relacionamento: ID do usuário
+  user?: User;      // Objeto do usuário associado (opcional)
+}
+
+export interface UserWithRelations extends User {
+  transactions: Transaction[]; // Todas as transações do usuário
+  portfolio: Portfolio[];      // Todos os ativos no portfólio do usuário
+  watchlist: Favoritos[];      // Todos os ativos na lista de observação do usuário
+}
+
+export interface TransactionWithUser extends Transaction {
+  user: User; // Usuário relacionado a essa transação
+}
