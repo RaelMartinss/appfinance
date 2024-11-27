@@ -58,11 +58,11 @@ export default function MarketPage() {
       setLoading(true);
       try {
         const response = await fetch('/api/favorites');
-        const data: ApiResponse = await response.json();
-        console.log('data', data);
+        const data: Fund[] = await response.json();
+        console.log('data- fff', data);
   
-        if (Array.isArray(data.watchlist)) {
-          const symbols: string[] = data.watchlist.map((item) => item.symbol);
+        if (Array.isArray(data)) {
+          const symbols: string[] = data.map((item) => item.symbol);
   
           const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
           const d = await r.json();
@@ -72,7 +72,7 @@ export default function MarketPage() {
         }
   
         if (response.ok) {
-          setFavorites(data.watchlist); // Corrigido: agora usamos apenas a watchlist
+          setFavorites(data); // Corrigido: agora usamos apenas a watchlist
         } else {
           console.error('Erro ao buscar favoritos:');
         }
@@ -227,7 +227,7 @@ export default function MarketPage() {
                         <span className="text-lg font-semibold">{favorite.symbol[0]}</span>
                       </div>
                       <div>
-                        <h3 className="font-medium">{favorite.name}</h3>
+                        <h3 className="font-medium">{favorite.shortName}</h3>
                         <p className="text-sm text-muted-foreground">{favorite.symbol}</p>
                       </div>
                     </div>

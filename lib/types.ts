@@ -58,6 +58,7 @@ export interface Fund {
   id: number;
   symbol: string;
   name: string;
+  shortName: string;
   assetType?: string;
   quantity?: number;
   price?: number;

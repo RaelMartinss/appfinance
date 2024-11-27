@@ -27,8 +27,6 @@ export default function StockPage({ params }: StockPageProps) {
       try {
         const response = await fetch(`/api/stocks?symbol=${params.symbol}`);
         const data = await response.json();
-
-        console.log('StockPage', data);
         setStock(data[0]);
       } catch (error) {
         console.error('Error fetching stock data:', error);
@@ -122,6 +120,7 @@ export default function StockPage({ params }: StockPageProps) {
     try {
       if(stock){
         console.log('stock already', stock);
+        console.log('isFavorite', isFavorite);
         if (isFavorite) {
           console.log('stock already DELETE', isFavorite);
           await fetch(`/api/favorites?symbol=${stock.symbol}`, {
@@ -135,7 +134,7 @@ export default function StockPage({ params }: StockPageProps) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               symbol: stock.symbol,
-              name: stock.shortName,
+              shortName: stock.shortName,
             }),
           });
 
