@@ -214,7 +214,7 @@ export default function MarketPage() {
                 const stockData = pecentResults.find(
                   (stock) => stock.symbol === favorite.symbol
                 );
-
+                
                 return (
                   <Link
                   href={`/stock/${stockData?.symbol}`}

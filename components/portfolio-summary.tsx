@@ -10,9 +10,9 @@ export function PortfolioSummary() {
   useEffect(() => {
     const fetchPortfolioHome = async () => {
       const response = await fetch('/api/portfolio');
-      const data: ApiResponse = await response.json();
+      const data: Fund[] = await response.json();
       console.log(data);
-      setPortfolio(data.portfolio);
+      setPortfolio(data);
     }
     fetchPortfolioHome();
   }, []);
@@ -31,16 +31,16 @@ export function PortfolioSummary() {
     portfolio.forEach((item) => {
       const quantity = item.quantity ?? 0; // Usa 0 se quantity for undefined
   
-      if (item.assetType === 'fiis') {
-        summary.fiis += quantity * (item.currentPrice ?? 0);
-      } else if (item.assetType === 'stocks') {
-        summary.stocks += quantity * (item.currentPrice ?? 0);
-      } else if (item.assetType === 'crypto') {
-        summary.crypto += quantity * (item.currentPrice ?? 0);
-      } else if (item.assetType === 'international') {
-        summary.international += quantity * (item.currentPrice ?? 0);
-      } else if (item.assetType === 'fixedIncome') {
-        summary.fixedIncome += quantity * (item.currentPrice ?? 0);
+      if (item.asset_type === 'fiis') {
+        summary.fiis += quantity * (item.current_price ?? 0);
+      } else if (item.asset_type === 'stocks') {
+        summary.stocks += quantity * (item.current_price ?? 0);
+      } else if (item.asset_type === 'crypto') {
+        summary.crypto += quantity * (item.current_price ?? 0);
+      } else if (item.asset_type === 'international') {
+        summary.international += quantity * (item.current_price ?? 0);
+      } else if (item.asset_type === 'fixedIncome') {
+        summary.fixedIncome += quantity * (item.current_price ?? 0);
       }
     });
   

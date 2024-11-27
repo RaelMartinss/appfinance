@@ -1,5 +1,3 @@
-import { NotNull } from "drizzle-orm";
-
 export interface StockData {
   symbol: string;
   currentPrice: number;
@@ -60,11 +58,15 @@ export interface Fund {
   name: string;
   shortName: string;
   assetType?: string;
+  asset_type?: string;
+  current_price?: number;
+  average_price?: number;
   quantity?: number;
   price?: number;
   currentPrice?: number;
   total?: number;
   date?: Date;
+  last_update: string;
 }
 
 interface Watchlist extends Fund {

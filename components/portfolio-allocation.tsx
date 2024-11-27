@@ -17,9 +17,9 @@ export function PortfolioAllocation() {
   useEffect(() => {
     const fetchPortfolioHome = async () => {
       const response = await fetch('/api/portfolio');
-      const data: ApiResponse = await response.json();
+      const data: Fund[] = await response.json();
       console.log(data);
-      setPortfolio(data.portfolio);
+      setPortfolio(data);
     }
     fetchPortfolioHome();
   }, []);
@@ -36,18 +36,18 @@ export function PortfolioAllocation() {
   
     portfolio.forEach((item) => {
       const quantity = item.quantity ?? 0;  // Atribui 0 se quantity for undefined
-      const currentPrice = item.currentPrice ?? 0;  // Atribui 0 se currentPrice for undefined
+      const currentPrice = item.current_price ?? 0;  // Atribui 0 se currentPrice for undefined
   
       // Agora, usa quantity e currentPrice com a garantia de que não são indefinidos
-      if (item.assetType === 'fiis') {
+      if (item.asset_type === 'fiis') {
         allocation.fiis += quantity * currentPrice;
-      } else if (item.assetType === 'stocks') {
+      } else if (item.asset_type === 'stocks') {
         allocation.stocks += quantity * currentPrice;
-      } else if (item.assetType === 'crypto') {
+      } else if (item.asset_type === 'crypto') {
         allocation.crypto += quantity * currentPrice;
-      } else if (item.assetType === 'international') {
+      } else if (item.asset_type === 'international') {
         allocation.international += quantity * currentPrice;
-      } else if (item.assetType === 'fixedIncome') {
+      } else if (item.asset_type === 'fixedIncome') {
         allocation.fixedIncome += quantity * currentPrice;
       }
     });
