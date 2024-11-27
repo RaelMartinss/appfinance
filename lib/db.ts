@@ -49,7 +49,8 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS favorites (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       symbol TEXT NOT NULL UNIQUE,
-      shortName TEXT NOT NULL
+      shortName TEXT NOT NULL,
+      added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
@@ -57,9 +58,28 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS portfolio (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       symbol TEXT NOT NULL UNIQUE,
-      shortName TEXT NOT NULL
+      shortName TEXT NOT NULL,
+      asset_type TEXT NOT NULL,
+      quantity REAL NOT NULL,
+      average_price REAL NOT NULL,
+      current_price REAL NOT NULL,
+      last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS transactions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      symbol TEXT NOT NULL,
+      shortName TEXT NOT NULL,
+      type TEXT NOT NULL,
+      asset_type TEXT NOT NULL,
+      quantity REAL NOT NULL,
+      price REAL NOT NULL,
+      total REAL NOT NULL,
+      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
 });
 
 // Exportando dbGet e dbAll com a tipagem de Favorite

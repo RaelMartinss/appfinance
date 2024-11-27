@@ -91,10 +91,11 @@ export default function MarketPage() {
       setLoading(true);
       try {
         const response = await fetch('/api/portfolio');
-        const data: ApiResponse = await response.json();
+        const data: Fund[] = await response.json();
+        console.log('data- portfolio', data);
 
-        if (Array.isArray(data.portfolio)) {
-          const symbols: string[] = data.portfolio.map(item => item.symbol);
+        if (Array.isArray(data)) {
+          const symbols: string[] = data.map(item => item.symbol);
 
           const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
           const d = await r.json();
@@ -106,7 +107,7 @@ export default function MarketPage() {
         }
 
         if (response.ok) {
-          setPortfolio(data.portfolio);
+          setPortfolio(data);
         } else {
           console.error('Erro ao buscar favoritos:');
         }

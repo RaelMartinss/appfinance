@@ -73,3 +73,11 @@ interface Watchlist extends Fund {
   name: string;
   addedAt: string;
 }
+
+export interface PortfolioPosition {
+  symbol: string;
+  quantity: number;
+  average_price: number;
+  currentPrice: number;
+  lastUpdate: string;
+}

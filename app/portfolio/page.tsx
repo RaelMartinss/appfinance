@@ -39,7 +39,7 @@ export default function PortfolioPage() {
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol') || '';
   const price = parseFloat(searchParams.get('price') || '0');
-  const name = searchParams.get('name') || '';
+  const shortName = searchParams.get('name') || '';
 
   const [assetType, setAssetType] = useState('');
   const [quantity, setQuantity] = useState('1');
@@ -63,7 +63,7 @@ export default function PortfolioPage() {
         },
         body: JSON.stringify({
           symbol,
-          name,
+          shortName,
           type,
           assetType,
           quantity: parseFloat(quantity),
@@ -75,6 +75,9 @@ export default function PortfolioPage() {
       if (!response.ok) {
         throw new Error('Failed to update portfolio');
       }
+      const data = await response.json();
+
+      console.log('setIsSubmitting - data', data);
 
       toast.success(
         type === 'buy' 
@@ -99,7 +102,7 @@ export default function PortfolioPage() {
             <span className="text-xl font-semibold">{symbol[0]}</span>
           </div>
           <div>
-            <h2 className="font-semibold">{name}</h2>
+            <h2 className="font-semibold">{shortName}</h2>
             <p className="text-sm text-muted-foreground">{symbol}</p>
           </div>
         </div>
