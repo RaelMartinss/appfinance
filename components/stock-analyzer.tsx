@@ -33,7 +33,7 @@ export function StockAnalyzer() {
         throw new Error("Erro ao buscar dados.");
       }
       const data = await response.json();
-      console.log('data', data[0]);
+      console.log('data', data);
       setStockData(data[0]);
 
     } catch (err) {
