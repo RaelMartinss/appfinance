@@ -28,15 +28,16 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
+    
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-
+      
       const result = await response.json();
-
+      console.log(result);
       if (!response.ok) {
         throw new Error(result.error || 'Failed to login');
       }
