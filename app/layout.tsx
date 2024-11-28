@@ -2,15 +2,13 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
-import { Sidebar } from '@/components/sidebar';
-import { MobileNav } from '@/components/mobile-nav';
 import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Sistema de Gestão Financeira',
-  description: 'Acompanhe e analise seus investimentos com facilidade',
+  title: 'Financial Management System',
+  description: 'Track and analyze your investments with ease',
 };
 
 export default function RootLayout({
@@ -27,13 +25,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col lg:flex-row min-h-screen">
-            <Sidebar />
-            <MobileNav />
-            <main className="flex-1 overflow-y-auto bg-background pt-16 lg:pt-0">
-              {children}
-            </main>
-          </div>
+          {children}
           <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>

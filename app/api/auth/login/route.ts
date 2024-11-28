@@ -7,6 +7,8 @@ export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
 
+    console.log(email, password);
+
     const user = await db.user.findUnique({
       where: { email },
     });
