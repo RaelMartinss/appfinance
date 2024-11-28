@@ -56,9 +56,11 @@ export async function getUserFromToken(request: NextRequest) {
 export async function setUserCookie(response: NextResponse, token: string) {
   response.cookies.set('token', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: true,
+    domain:  process.env.NODE_ENV === 'development' ? '.localhost' : 'appfinanci.site',
+    path: '/',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24, // 24 hours
+    maxAge: 60 * 60 * 24,
   });
   return response;
 }
