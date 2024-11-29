@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { db } from '@/lib/db';
 import { encrypt, setUserCookie } from '@/lib/auth';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
 
@@ -33,18 +33,16 @@ export async function POST(request: NextRequest) {
       email: user.email,
     });
 
-    const response = NextResponse.json(
-      { 
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        }
-      },
-      { status: 200 }
-    );
+    const response = NextResponse.json({ token }, { status: 200 });
+    response.cookies.set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 86400, // 1 day
+      path: '/',
+    });
 
-    await setUserCookie(response, token);
+    // await setUserCookie(response, token);
     return response;
   } catch (error) {
     return NextResponse.json(

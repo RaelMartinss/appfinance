@@ -4,7 +4,11 @@ import { jwtVerify, SignJWT } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
 // import { db } from '@/lib/db';
 
-// const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+import { compare, hash } from 'bcryptjs';
+import { sign, verify } from 'jsonwebtoken';
+import { db } from '@/lib/db';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function getJwtSecretKey() {
   if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
@@ -72,11 +76,7 @@ export async function setUserCookie(response: NextResponse, token: string) {
 // }
 
 
-import { compare, hash } from 'bcryptjs';
-import { sign, verify } from 'jsonwebtoken';
-import { db } from '@/lib/db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function hashPassword(password: string) {
   return await hash(password, 12);

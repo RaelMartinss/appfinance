@@ -22,14 +22,14 @@ export function NavigationLinks({ mobile, onNavigate }: NavigationLinksProps) {
   const pathname = usePathname();
 
   const links = [
-    { name: 'Home', href: '/', icon: Home },
-    { name: 'Calculator', href: '/calculator', icon: Calculator },
-    { name: 'Market Overview', href: '/market', icon: Search },
+    { name: 'Home', href: '/dashboard', icon: Home },
+    { name: 'Calculator', href: '/dashboard/calculator', icon: Calculator },
+    { name: 'Market Overview', href: '/dashboard/market', icon: Search },
   ];
 
   const marketLinks = [
     { name: 'Watchlist', href: '/watchlist', icon: Star },
-    { name: 'Portfolio', href: '/portfolio', icon: Briefcase },
+    { name: 'Portfolio', href: '/dashboard/portfolio', icon: Briefcase },
     { name: 'Top Gainers', href: '/gainers', icon: TrendingUp },
     { name: 'Top Losers', href: '/losers', icon: TrendingDown },
   ];

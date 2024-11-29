@@ -37,14 +37,19 @@ export default function LoginPage() {
       });
       
       const result = await response.json();
-      console.log(result);
+      if (response.ok) {
+        toast.success('Login successful');
+        router.push('/dashboard');
+        router.refresh();
+      }
+
       if (!response.ok) {
         throw new Error(result.error || 'Failed to login');
       }
 
-      toast.success('Login successful');
-      router.push('/');
-      router.refresh();
+      // toast.success('Login successful');
+      // router.push('/');
+      // router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to login');
     } finally {
