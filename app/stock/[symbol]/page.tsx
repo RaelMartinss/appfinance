@@ -164,7 +164,7 @@ export default function StockPage({ params }: StockPageProps) {
 
   const addToPortfolio = () => {
     if (stock) {
-      router.push(`/portfolio?symbol=${params.symbol}&price=${stock.price}&name=${encodeURIComponent(stock.shortName)}`);
+      router.push(`/dashboard/portfolio?symbol=${params.symbol}&price=${stock.price}&name=${encodeURIComponent(stock.shortName)}`);
     }
   };
 
