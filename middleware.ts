@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { verifyToken } from './lib/auth';
 
 export function middleware(request: NextRequest) {
+  const url = request.nextUrl;
   const token = request.cookies.get('token')?.value;
 
   if (!token) {
@@ -15,6 +16,9 @@ export function middleware(request: NextRequest) {
   //     Authorization: `Bearer ${token}`,
   //   },
   // });
+  // if (url.pathname === '/') {
+  //   return NextResponse.redirect(new URL('/login', request.url));
+  // }
 
   const decodedToken = verifyToken(token);
   if (!decodedToken) {

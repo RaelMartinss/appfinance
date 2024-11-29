@@ -8,13 +8,14 @@ import { UserNav } from '@/components/user-nav';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   // const [user, setUser] = useState<{ name: string; email: string } | null>(null);
-  // const router = useRouter();
+  const router = useRouter();
 
   // useEffect(() => {
   //   // Fetch user data
@@ -38,6 +39,17 @@ export default function DashboardLayout({
   //     router.push('/login');
   //   }
   // };
+
+  useEffect(() => {
+    // Check if user is already logged in
+    fetch('/api/auth/me')
+      .then(res => {
+        console.log('res', res);
+        if (res.ok) {
+          router.push('/');
+        }
+      });
+  }, [router]);
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
