@@ -46,7 +46,7 @@ export default function DashboardLayout({
       .then(res => {
         console.log('res', res);
         if (res.ok) {
-          router.push('/');
+          router.push('/dashboard');
         }
       });
   }, [router]);
