@@ -15,12 +15,14 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function PortfolioAllocation() {
   const [portfolio, setPortfolio] = useState<Portfolio[]>([]);
-  const userId: number = 7;
-
+ 
   useEffect(() => {
     const fetchPortfolioHome = async () => {
       try {
-        const response = await fetch(`/api/portfolio?userId=${userId}`);
+        const userte = await fetch('/api/auth/user');
+        const userId = await userte.json();
+        console.log('userIds', userId);
+        const response = await fetch(`/api/portfolio?userId=${userId.id}`);
         
         if (!response.ok) {
           throw new Error(`Erro ao buscar o portfólio: ${response.statusText}`);
@@ -33,7 +35,7 @@ export function PortfolioAllocation() {
       }  
     }
     fetchPortfolioHome();
-  }, [userId]);
+  }, []);
 
   // Função para mapear os dados do portfolio e calcular a alocação
   const calculateAllocation = () => {

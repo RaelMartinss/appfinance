@@ -6,16 +6,17 @@ import { ApiResponse, Fund } from '@/lib/types';
 
 export function PortfolioSummary() {
   const [portfolio, setPortfolio] = useState<Fund[]>([]);
-  const userId: number = 7;
 
   useEffect(() => {
     const fetchPortfolioHome = async () => {
-      const response = await fetch(`/api/portfolio?userId=${userId}`);
+      const userte = await fetch('/api/auth/user');
+      const userId = await userte.json();
+      const response = await fetch(`/api/portfolio?userId=${userId.id}`);
       const data = await response.json(); 
       setPortfolio(data);
     }
     fetchPortfolioHome();
-  }, [userId]);
+  }, []);
 
   // Função para calcular os valores de cada categoria no portfolio
   const calculateSummary = () => {

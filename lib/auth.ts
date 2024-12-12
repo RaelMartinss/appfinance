@@ -92,7 +92,7 @@ export function generateToken(userId: number) {
 
 export function verifyToken(token: string) {
   try {
-    return verify(token, JWT_SECRET) as { userId: number };
+    return verify(token, JWT_SECRET) as { id: number };
   } catch {
     return null;
   }

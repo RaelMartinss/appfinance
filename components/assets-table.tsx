@@ -19,16 +19,18 @@ interface ApiResponse {
 
 export function AssetsTable() {
   const [assets, setAssets] = useState<Portfolio[]>([]);
-  const userId: number = 7;
+
   useEffect(() => {
     const fetchPortfolioHome = async () => {
-      const response = await fetch(`/api/portfolio?userId=${userId}`);
+      const userte = await fetch('/api/auth/user');
+      const userId = await userte.json();
+      const response = await fetch(`/api/portfolio?userId=${userId.id}`);
       const data = await response.json();
       
       setAssets(data);  // Atualiza os dados no estado
     };
     fetchPortfolioHome();
-  }, [userId]);
+  }, []);
 
   const formatDate = (date: string | Date): string => {
     const dateObj = typeof date === "string" ? new Date(date) : date;
