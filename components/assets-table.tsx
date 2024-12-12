@@ -19,7 +19,7 @@ interface ApiResponse {
 
 export function AssetsTable() {
   const [assets, setAssets] = useState<Portfolio[]>([]);
-  const userId: number = 1;
+  const userId: number = 7;
   useEffect(() => {
     const fetchPortfolioHome = async () => {
       const response = await fetch(`/api/portfolio?userId=${userId}`);

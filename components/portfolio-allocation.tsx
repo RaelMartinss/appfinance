@@ -1,3 +1,5 @@
+"use client";
+
 import { Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -6,14 +8,14 @@ import {
   Legend,
   ChartData,
 } from 'chart.js';
-import { ApiResponse, Fund, Portfolio } from '@/lib/types';
+import { Portfolio } from '@/lib/types';
 import { useEffect, useState } from 'react';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function PortfolioAllocation() {
   const [portfolio, setPortfolio] = useState<Portfolio[]>([]);
-  const userId: number = 1;
+  const userId: number = 7;
 
   useEffect(() => {
     const fetchPortfolioHome = async () => {

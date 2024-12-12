@@ -40,16 +40,16 @@ export default function DashboardLayout({
   //   }
   // };
 
-  useEffect(() => {
-    // Check if user is already logged in
-    fetch('/api/auth/me')
-      .then(res => {
-        console.log('res', res);
-        if (res.ok) {
-          router.push('/');
-        }
-      });
-  }, [router]);
+  // useEffect(() => {
+  //   // Check if user is already logged in
+  //   fetch('/api/auth/me')
+  //     .then(res => {
+  //       console.log('res', res);
+  //       if (res.ok) {
+  //         router.push('/dashboard');
+  //       }
+  //     });
+  // }, [router]);
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">

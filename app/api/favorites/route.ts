@@ -19,7 +19,10 @@ export async function POST(request: Request) {
     });
 
     if (existingFavorite) {
-      return new Response("Este ativo já está nos favoritos.", { status: 400 });
+      return new Response(
+        JSON.stringify({isFavorite: true}), 
+        { status: 200 }
+      );
     }
     
     const favorite = await prisma.favoritos.create({
@@ -69,3 +72,34 @@ export async function GET(request: Request) {
     return new Response("Erro interno ao buscar os favoritos", { status: 500 });
   }
 }
+
+
+// export async function DELETE(request: Request) {
+//   try {
+//     const url = new URL(request.url);
+//     const userId = url.searchParams.get("userId");
+
+//     if (!userId) {
+//       return new Response(
+//         JSON.stringify({ error: "Parâmetro userId é obrigatório" }),
+//         { status: 400 }
+//       );
+//     }
+
+//     // Busca os favoritos do usuário
+//     const favoritos = await prisma.favoritos.delete({
+//       where: {
+//         userId: Number(userId),
+//       },
+//     });
+
+//     if (favoritos.length === 0) {
+//       return new Response("Nenhum favorito encontrado", { status: 404 });
+//     }
+
+//     return NextResponse.json(favoritos);
+//   } catch (error) {
+//     console.error("Erro ao buscar os favoritos:", error);
+//     return new Response("Erro interno ao buscar os favoritos", { status: 500 });
+//   }
+// }

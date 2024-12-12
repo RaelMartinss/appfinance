@@ -1,5 +1,3 @@
-"use client";
-
 import { PortfolioAllocation } from '@/components/portfolio-allocation';
 import { PortfolioSummary } from '@/components/portfolio-summary';
 import { AssetsTable } from '@/components/assets-table';

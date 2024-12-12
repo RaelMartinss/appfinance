@@ -12,13 +12,6 @@ import { SearchCommand } from '@/components/search-command';
 import Link from 'next/link';
 
 
-const SEARCH_EXAMPLES = [
-  { type: 'Brazilian Stocks', examples: 'PETR4, VALE3, BBAS3' },
-  { type: 'REITs', examples: 'MXRF11, HGLG11' },
-  { type: 'International', examples: 'AAPL, MSFT, GOOGL' },
-  { type: 'Crypto', examples: 'BTC, ETH, BTC-USD' },
-];
-
 export default function MarketPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<StockData[]>([]);
@@ -31,7 +24,7 @@ export default function MarketPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const userId: number = 1;
+  const userId: number = 7;
 
   const handleSearch = async (symbol: string) => {
     if (!symbol) return;

@@ -6,7 +6,7 @@ import { ApiResponse, Fund } from '@/lib/types';
 
 export function PortfolioSummary() {
   const [portfolio, setPortfolio] = useState<Fund[]>([]);
-  const userId: number = 1;
+  const userId: number = 7;
 
   useEffect(() => {
     const fetchPortfolioHome = async () => {

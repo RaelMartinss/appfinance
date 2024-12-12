@@ -69,11 +69,13 @@ function PortfolioContent() {
           quantity: parseFloat(quantity),
           price,
           date: date.toISOString(),
-          userId: 1
+          userId: 7
         }),
       });
 
       const data = await response.json();
+      console.log('response', response);
+      console.log('data', data);
       if (!response.ok) {
         throw new Error('Failed to update portfolio');
       }
@@ -84,7 +86,7 @@ function PortfolioContent() {
           ? 'Compra realizada com sucesso!' 
           : 'Venda realizada com sucesso!'
       );
-      router.push('/');
+      router.push('/dashboard');
     } catch (error) {
       toast.error('Erro ao processar a operação');
     } finally {
