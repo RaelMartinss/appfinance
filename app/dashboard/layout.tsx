@@ -14,24 +14,26 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   // Fetch user data
-  //   const fetchUser = async () => {
-  //     const response = await fetch('/api/user');
-  //     console.log(response)
-  //     if (response.ok) {
-  //       const userData = await response.json();
-  //       setUser(userData);
-  //     } else {
-  //       router.push('/login');
-  //     }
-  //   };
+  useEffect(() => {
+    // Fetch user data
+    const fetchUser = async () => {
+      const response = await fetch('/api/auth/user');
+      console.log('dashboard---', response)
+      if (response.ok) {
+        console.log('dashboard---lokokokokoko')
+        const userData = await response.json();
+        setUser(userData);
+      } else {
+        console.log('dashboard---notokokokokoko-----else')
+        router.push('/');
+      }
+    };
 
-  //   fetchUser();
-  // }, [router]);
+    fetchUser();
+  }, [router]);
 
   // const handleLogout = async () => {
   //   const response = await fetch('/api/auth/logout', { method: 'POST' });
