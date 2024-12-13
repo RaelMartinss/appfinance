@@ -81,6 +81,8 @@ export default function StockPage({ params }: StockPageProps) {
     const fetchFavoriteStatus = async () => {
       try {
         if(stock){
+          const userte = await fetch('/api/auth/user');
+          const userId = await userte.json();
           const response = await fetch('/api/favorites', {
             method: 'POST',
             headers: {
@@ -89,7 +91,7 @@ export default function StockPage({ params }: StockPageProps) {
             body: JSON.stringify({
               symbol: stock.symbol,
               name: stock.shortName,
-              userId: 7,
+              userId: userId.id,
             }),
           });
 
@@ -144,13 +146,15 @@ export default function StockPage({ params }: StockPageProps) {
           });
           toast.info("Removido dos favoritos!");
         } else {
+          const userte = await fetch('/api/auth/user');
+          const userId = await userte.json();
           const response = await fetch("/api/favorites", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               symbol: stock.symbol,
               name: stock.shortName,
-              userId: 7,
+              userId: userId.id,
             }),
           });
 

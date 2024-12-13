@@ -56,6 +56,8 @@ function PortfolioContent() {
 
     setIsSubmitting(true);
     try {
+      const userte = await fetch('/api/auth/user');
+      const userId = await userte.json();
       const response = await fetch('/api/portfolio', {
         method: 'POST',
         headers: {
@@ -69,7 +71,7 @@ function PortfolioContent() {
           quantity: parseFloat(quantity),
           price,
           date: date.toISOString(),
-          userId: 7
+          userId: userId.id
         }),
       });
 
