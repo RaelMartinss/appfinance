@@ -35,7 +35,6 @@ export async function fetchStockData(symbol: string): Promise<StockData> {
   try {
     const formattedSymbol = formatSymbol(symbol);
     const quote = await yahooFinance.quote(formattedSymbol);
-    console.log('fetchStockData', quote)
 
     if (!quote || !quote.regularMarketPrice) {
       throw new Error('Asset data not found');

@@ -21,7 +21,6 @@ export function PortfolioAllocation() {
       try {
         const userte = await fetch('/api/auth/user');
         const userId = await userte.json();
-        console.log('userIds', userId);
         const response = await fetch(`/api/portfolio?userId=${userId.id}`);
         
         if (!response.ok) {

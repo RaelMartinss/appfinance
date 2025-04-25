@@ -64,9 +64,6 @@ export async function GET(request: Request) {
       .slice(0, 10);
 
       const processedSymbol = combinedResults.filter(result => result.symbol === query);
-      console.log(processedSymbol);
-
-      console.log('processedSymbol--', processedSymbol)
 
     return NextResponse.json(combinedResults);
   } catch (error) {

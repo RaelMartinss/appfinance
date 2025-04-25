@@ -20,7 +20,6 @@ export async function GET(req: Request) {
   try {
    
     const quotes = await yahooFinance.quote(processedSymbols, { return: "map" });
-    console.log('PEPE24478', quotes)
     if (!quotes || quotes.size === 0) {
       throw new Error("No data found for the provided symbols.");
     }

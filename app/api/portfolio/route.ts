@@ -17,9 +17,6 @@ interface TransactionRequest {
 
 export async function POST(request: Request): Promise<Response> {
   try {
-    // const body = await request.json();
-    // console.log('body', body);
-    // Tipando o corpo da requisição
     const {
       symbol,
       name,
@@ -89,7 +86,6 @@ export async function POST(request: Request): Promise<Response> {
           },
         },
       });
-      console.log("Nova posição adicionada ao portfólio:", newPosition);
     }
 
     return new Response(

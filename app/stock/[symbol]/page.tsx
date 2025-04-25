@@ -96,8 +96,6 @@ export default function StockPage({ params }: StockPageProps) {
           });
 
           const data = await response.json();
-          console.log('data', data.isFavorite);
-          console.log('response', response);
     
           if (response.ok) {
             setIsFavorite(data.isFavorite);
@@ -138,7 +136,6 @@ export default function StockPage({ params }: StockPageProps) {
   
   const toggleFavorite = async () => {
     try {
-      console.log('Toggle Favorite', isFavorite);
       if(stock){
         if (isFavorite) {
           await fetch(`/api/favorites?symbol=${stock.symbol}`, {
