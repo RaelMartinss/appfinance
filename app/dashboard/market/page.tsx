@@ -12,13 +12,6 @@ import { SearchCommand } from '@/components/search-command';
 import Link from 'next/link';
 
 
-const SEARCH_EXAMPLES = [
-  { type: 'Brazilian Stocks', examples: 'PETR4, VALE3, BBAS3' },
-  { type: 'REITs', examples: 'MXRF11, HGLG11' },
-  { type: 'International', examples: 'AAPL, MSFT, GOOGL' },
-  { type: 'Crypto', examples: 'BTC, ETH, BTC-USD' },
-];
-
 export default function MarketPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<StockData[]>([]);
@@ -30,8 +23,6 @@ export default function MarketPage() {
   const [loading, setLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const userId: number = 1;
 
   const handleSearch = async (symbol: string) => {
     if (!symbol) return;
@@ -60,7 +51,9 @@ export default function MarketPage() {
     const fetchFavorites = async () => {
       setLoading(true);
         try {
-          const response = await fetch(`/api/favorites?userId=${userId}`);
+          const userte = await fetch('/api/auth/user');
+          const userId = await userte.json();
+          const response = await fetch(`/api/favorites?userId=${userId.id}`);
           const data: Fund[] = await response.json();
     
           if (Array.isArray(data)) {
@@ -86,13 +79,15 @@ export default function MarketPage() {
     };
   
     fetchFavorites(); // Busca os favoritos ao carregar
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/portfolio?userId=${userId}`);
+        const userte = await fetch('/api/auth/user');
+      const userId = await userte.json();
+        const response = await fetch(`/api/portfolio?userId=${userId.id}`);
         const data: Fund[] = await response.json();
 
         if (Array.isArray(data)) {
@@ -120,7 +115,8 @@ export default function MarketPage() {
     };
 
     fetchPortfolio();
-  }, [userId]);
+  }, []);
+  
   useEffect(() => {
     const topGainersLosers = async () => {
       setLoading(true);

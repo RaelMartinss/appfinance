@@ -56,6 +56,8 @@ function PortfolioContent() {
 
     setIsSubmitting(true);
     try {
+      const userte = await fetch('/api/auth/user');
+      const userId = await userte.json();
       const response = await fetch('/api/portfolio', {
         method: 'POST',
         headers: {
@@ -69,11 +71,13 @@ function PortfolioContent() {
           quantity: parseFloat(quantity),
           price,
           date: date.toISOString(),
-          userId: 1
+          userId: userId.id
         }),
       });
 
       const data = await response.json();
+      console.log('response', response);
+      console.log('data', data);
       if (!response.ok) {
         throw new Error('Failed to update portfolio');
       }
@@ -84,7 +88,7 @@ function PortfolioContent() {
           ? 'Compra realizada com sucesso!' 
           : 'Venda realizada com sucesso!'
       );
-      router.push('/');
+      router.push('/dashboard');
     } catch (error) {
       toast.error('Erro ao processar a operação');
     } finally {

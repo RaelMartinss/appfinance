@@ -17,6 +17,8 @@ interface TransactionRequest {
 
 export async function POST(request: Request): Promise<Response> {
   try {
+    // const body = await request.json();
+    // console.log('body', body);
     // Tipando o corpo da requisição
     const {
       symbol,
@@ -90,7 +92,11 @@ export async function POST(request: Request): Promise<Response> {
       console.log("Nova posição adicionada ao portfólio:", newPosition);
     }
 
-    return new Response("Operação concluída com sucesso", { status: 200 });
+    return new Response(
+      JSON.stringify({
+          success: "Operação concluída com sucesso"
+        }), 
+      { status: 200 });
   } catch (err) {
     console.error("Erro:", err);
     return new Response("Erro interno", { status: 500 });

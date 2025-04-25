@@ -14,9 +14,10 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const router = useRouter();
 
+<<<<<<< HEAD
   // useEffect(() => {
   //   // Fetch user data
   //   const fetchUser = async () => {
@@ -28,9 +29,25 @@ export default function DashboardLayout({
   //       router.push('/login');
   //     }
   //   };
+=======
+  useEffect(() => {
+    // Fetch user data
+    const fetchUser = async () => {
+      const response = await fetch('/api/auth/user');
+      console.log('dashboard---', response)
+      if (response.ok) {
+        console.log('dashboard---lokokokokoko')
+        const userData = await response.json();
+        setUser(userData);
+      } else {
+        console.log('dashboard---notokokokokoko-----else')
+        router.push('/');
+      }
+    };
+>>>>>>> 5add1a3cb23fd7f83837594b6f89ae119f012153
 
-  //   fetchUser();
-  // }, [router]);
+    fetchUser();
+  }, [router]);
 
   // const handleLogout = async () => {
   //   const response = await fetch('/api/auth/logout', { method: 'POST' });
@@ -39,6 +56,7 @@ export default function DashboardLayout({
   //   }
   // };
 
+<<<<<<< HEAD
   useEffect(() => {
     // Check if user is already logged in
     fetch('/api/auth/me')
@@ -48,6 +66,18 @@ export default function DashboardLayout({
         }
       });
   }, [router]);
+=======
+  // useEffect(() => {
+  //   // Check if user is already logged in
+  //   fetch('/api/auth/me')
+  //     .then(res => {
+  //       console.log('res', res);
+  //       if (res.ok) {
+  //         router.push('/dashboard');
+  //       }
+  //     });
+  // }, [router]);
+>>>>>>> 5add1a3cb23fd7f83837594b6f89ae119f012153
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">

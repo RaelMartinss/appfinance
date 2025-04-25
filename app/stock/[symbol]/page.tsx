@@ -11,7 +11,6 @@ import { toast } from 'sonner';
 interface StockPageProps {
   params: {
     symbol: string;
-    name: string;
   };
 }
 
@@ -81,32 +80,41 @@ export default function StockPage({ params }: StockPageProps) {
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       try {
-        const response = await fetch('/api/favorites', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            symbol: params.symbol,
-            name: params.name,
-            userId: 1,
-          }),
-        });
+        if(stock){
+          const userte = await fetch('/api/auth/user');
+          const userId = await userte.json();
+          const response = await fetch('/api/favorites', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              symbol: stock.symbol,
+              name: stock.shortName,
+              userId: userId.id,
+            }),
+          });
 
-        const data = await response.json();
-  
-        if (response.ok) {
-          setIsFavorite(data.isFavorite);
-        } else {
-          console.error('Erro ao buscar status de favorito:', data.error);
+          const data = await response.json();
+          console.log('data', data.isFavorite);
+          console.log('response', response);
+    
+          if (response.ok) {
+            setIsFavorite(data.isFavorite);
+          } else {
+            console.error('Erro ao buscar status de favorito:', data.error);
+          }
         }
+        // else {
+        //     toast.error("Stock data is null, cannot toggle favorite.");
+        //   }  
       } catch (error) {
         console.error('Erro ao buscar status de favorito:', error);
       }
     };
   
     fetchFavoriteStatus();
-  }, [params.symbol, params.name]);
+  }, [stock]);
 
   useEffect(() => {
     const fetchPortfolioStatus = async () => {
@@ -130,6 +138,7 @@ export default function StockPage({ params }: StockPageProps) {
   
   const toggleFavorite = async () => {
     try {
+      console.log('Toggle Favorite', isFavorite);
       if(stock){
         if (isFavorite) {
           await fetch(`/api/favorites?symbol=${stock.symbol}`, {
@@ -137,13 +146,15 @@ export default function StockPage({ params }: StockPageProps) {
           });
           toast.info("Removido dos favoritos!");
         } else {
+          const userte = await fetch('/api/auth/user');
+          const userId = await userte.json();
           const response = await fetch("/api/favorites", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               symbol: stock.symbol,
               name: stock.shortName,
-              userId: 1,
+              userId: userId.id,
             }),
           });
 
@@ -154,9 +165,10 @@ export default function StockPage({ params }: StockPageProps) {
           toast.success("Adicionado aos favoritos!");
         }
         setIsFavorite(!isFavorite);
-      } else {
-        toast.error("Stock data is null, cannot toggle favorite.");
-      }
+      } 
+      //else {
+      //   toast.error("Stock data is null, cannot toggle favorite.");
+      // }
     } catch (error) {
       console.error("Erro ao atualizar favoritos:", error);
     }
