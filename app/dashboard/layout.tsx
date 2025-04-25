@@ -21,7 +21,6 @@ export default function DashboardLayout({
   //   // Fetch user data
   //   const fetchUser = async () => {
   //     const response = await fetch('/api/user');
-  //     console.log(response)
   //     if (response.ok) {
   //       const userData = await response.json();
   //       setUser(userData);
@@ -44,7 +43,6 @@ export default function DashboardLayout({
     // Check if user is already logged in
     fetch('/api/auth/me')
       .then(res => {
-        console.log('res', res);
         if (res.ok) {
           router.push('/dashboard');
         }

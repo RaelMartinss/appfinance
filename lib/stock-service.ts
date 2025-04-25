@@ -3,8 +3,8 @@ import yahooFinance from "yahoo-finance2";
 
 const ASSET_PATTERNS = {
   BRAZILIAN_STOCK: /^[A-Z]{4}\d{1,2}$/,
-  CRYPTO: /^[A-Z]{3,4}-USD$/,
-  INTERNATIONAL_STOCK: /^[A-Z]{1,4}$/
+  CRYPTO: /^[A-Z0-9\-]{1,}-USD$/,
+  INTERNATIONAL_STOCK: /^[A-Z0-9\-]{1,}$/
 };
 
 export function formatSymbol(symbol: string): string {
@@ -19,9 +19,9 @@ export function formatSymbol(symbol: string): string {
   if (cleanSymbol.endsWith('-USD')) {
     return cleanSymbol;
   }
-  if (['BTC', 'ETH', 'USDT', 'BNB', 'XRP'].includes(cleanSymbol)) {
-    return `${cleanSymbol}-USD`;
-  }
+  // if (['BTC', 'ETH', 'USDT', 'BNB', 'XRP'].includes(cleanSymbol)) {
+  //   return `${cleanSymbol}-USD`;
+  // }
 
   // International stocks (no modification needed)
   return cleanSymbol;
@@ -35,6 +35,7 @@ export async function fetchStockData(symbol: string): Promise<StockData> {
   try {
     const formattedSymbol = formatSymbol(symbol);
     const quote = await yahooFinance.quote(formattedSymbol);
+    console.log('fetchStockData', quote)
 
     if (!quote || !quote.regularMarketPrice) {
       throw new Error('Asset data not found');

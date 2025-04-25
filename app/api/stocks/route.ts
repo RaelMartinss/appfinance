@@ -13,15 +13,17 @@ export async function GET(req: Request) {
   const symbols = symbolParam.split(",").map((symbol) => symbol.trim());
 
   const processedSymbols = symbols.map((symbol) => {
-    // if (!symbol.endsWith(".SA")) {
-    //   return `${symbol}.SA`;
-    // }
     const formattedSymbol = formatSymbol(symbol);
     return formattedSymbol;
   });
 
   try {
+   
     const quotes = await yahooFinance.quote(processedSymbols, { return: "map" });
+    console.log('PEPE24478', quotes)
+    if (!quotes || quotes.size === 0) {
+      throw new Error("No data found for the provided symbols.");
+    }
     const historicalDataPromises = processedSymbols.map((symbol) =>
       yahooFinance.historical(symbol, {
         period1: "2024-01-01", 

@@ -32,7 +32,6 @@ export function middleware(request: NextRequest) {
 
   // try {
   //   const data = await res.json();
-  //   console.log('User data:', data);
   // } catch (error) {
   //   console.error('Error parsing JSON response:', error);
   //   return NextResponse.redirect(new URL('/login', request.url));

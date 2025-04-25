@@ -14,6 +14,12 @@ const POPULAR_ASSETS = [
   { symbol: 'GOOGL', name: 'Alphabet Inc.', type: 'International Stock' },
   { symbol: 'BTC-USD', name: 'Bitcoin USD', type: 'Cryptocurrency' },
   { symbol: 'ETH-USD', name: 'Ethereum USD', type: 'Cryptocurrency' },
+
+  { symbol: 'PEPE24478-USD', name: 'Pepe Coin', type: 'Cryptocurrency' },
+  { symbol: 'BONK-USD', name: 'Bonk', type: 'Cryptocurrency' },
+
+  { symbol: 'PEPECOIN-USD', name: 'PepeCoin USD', type: 'Cryptocurrency' },
+  { symbol: 'PEPE3027425-USD', name: 'Pepe 3.0 USD', type: 'Cryptocurrency' },
 ];
 
 export async function GET(request: Request) {
@@ -50,13 +56,17 @@ export async function GET(request: Request) {
       name:  quote.shortname || quote.longname || quote.symbol,
       type: getAssetType(quote.symbol),
     }));
-
     // Combine local and API results, remove duplicates
     const combinedResults = [...localResults, ...formattedResults]
       .filter((value, index, self) => 
         index === self.findIndex((t) => t.symbol === value.symbol)
       )
       .slice(0, 10);
+
+      const processedSymbol = combinedResults.filter(result => result.symbol === query);
+      console.log(processedSymbol);
+
+      console.log('processedSymbol--', processedSymbol)
 
     return NextResponse.json(combinedResults);
   } catch (error) {
