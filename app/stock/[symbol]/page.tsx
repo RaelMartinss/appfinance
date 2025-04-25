@@ -83,6 +83,7 @@ export default function StockPage({ params }: StockPageProps) {
         if(stock){
           const userte = await fetch('/api/auth/user');
           const userId = await userte.json();
+          console.log('userId - f', userId);
           const response = await fetch('/api/favorites', {
             method: 'POST',
             headers: {
@@ -94,7 +95,7 @@ export default function StockPage({ params }: StockPageProps) {
               userId: userId.id,
             }),
           });
-
+          console.log('response - f', response);
           const data = await response.json();
     
           if (response.ok) {

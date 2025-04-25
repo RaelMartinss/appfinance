@@ -2,11 +2,10 @@ import { jwtVerify, SignJWT } from 'jose';
 // import jwt from 'jsonwebtoken';
 // import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-// import { db } from '@/lib/db';
+import { db } from '@/lib/db/index';
 
 import { compare, hash } from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
-import { db } from '@/lib/db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 

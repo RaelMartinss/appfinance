@@ -35,6 +35,8 @@ export default function Login() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
+
+      console.log('Response:', response);
       
       const result = await response.json();
       if (response.ok) {

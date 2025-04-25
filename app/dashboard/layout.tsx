@@ -17,27 +17,27 @@ export default function DashboardLayout({
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   // Fetch user data
-  //   const fetchUser = async () => {
-  //     const response = await fetch('/api/auth/user');
-  //     if (response.ok) {
-  //       const userData = await response.json();
-  //       setUser(userData);
-  //     } else {
-  //       router.push('/');
-  //     }
-  //   };
+  useEffect(() => {
+    // Fetch user data
+    const fetchUser = async () => {
+      const response = await fetch('/api/auth/user');
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+      } else {
+        router.push('/');
+      }
+    };
 
-  //   fetchUser();
-  // }, [router]);
+    fetchUser();
+  }, [router]);
 
-  // const handleLogout = async () => {
-  //   const response = await fetch('/api/auth/logout', { method: 'POST' });
-  //   if (response.ok) {
-  //     router.push('/login');
-  //   }
-  // };
+  const handleLogout = async () => {
+    const response = await fetch('/api/auth/logout', { method: 'POST' });
+    if (response.ok) {
+      router.push('/login');
+    }
+  };
 
   // useEffect(() => {
   //   // Check if user is already logged in

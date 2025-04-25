@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { db } from '@/lib/db';
+import { db } from '@/lib/db/index';
 import { encrypt, setUserCookie } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
-
+    console.log('Received email:', email);
+    console.log('Received password:', password);
     const user = await db.user.findUnique({
       where: { email },
     });
-
+    console.log('User found:', user);
     if (!user) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
