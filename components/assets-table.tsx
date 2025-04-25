@@ -15,6 +15,7 @@ interface Asset {
 
 interface ApiResponse {
   portfolio: Asset[];
+  
 }
 
 export function AssetsTable() {
