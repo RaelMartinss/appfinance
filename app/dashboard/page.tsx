@@ -13,7 +13,7 @@ export default function Home() {
       </div>
 
       <div className="bg-card rounded-lg border p-4 lg:p-6">
-        <h2 className="text-xl lg:text-2xl font-semibold mb-4 lg:mb-6">Assets List</h2>
+        <h2 className="text-xl lg:text-2xl font-semibold mb-4 lg:mb-6">Lista de ativos</h2>
         <AssetsTable />
       </div>
     </div>

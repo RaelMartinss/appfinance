@@ -61,7 +61,7 @@ export function PortfolioSummary() {
     { label: 'Available Cash', value: `R$ ${summary.availableCash.toLocaleString('pt-BR')}`, color: 'text-green-500' },
     { label: 'FIIs', value: `R$ ${summary.fiis.toLocaleString('pt-BR')}`, color: 'text-blue-500' },
     { label: 'Reits', value: `R$ ${summary.reits.toLocaleString('pt-BR')}`, color: 'text-green-400' },
-    { label: 'Crypto', value: `R$ ${summary.crypto.toLocaleString('pt-BR')}`, color: 'text-purple-500' },
+    { label: 'Crypto', value: `R$ ${summary.crypto.toLocaleString('pt-BR', {style: 'decimal', maximumFractionDigits: 2})}`, color: 'text-purple-500' },
     { label: 'Stocks', value: `R$ ${summary.stocks.toLocaleString('pt-BR')}`, color: 'text-orange-500' },
     { label: 'International', value: `R$ ${summary.international.toLocaleString('pt-BR')}`, color: 'text-cyan-500' },
     { label: 'Fixed Income', value: `R$ ${summary.fixedIncome.toLocaleString('pt-BR')}`, color: 'text-pink-500' },
@@ -69,7 +69,7 @@ export function PortfolioSummary() {
 
   return (
     <div className="bg-card rounded-lg border p-6">
-      <h2 className="text-2xl font-semibold mb-6 ">Portfolio Summary</h2>
+      <h2 className="text-2xl font-semibold mb-6 ">Resumo do portfólio</h2>
       <div className="grid gap-4">
         {summaryData.map((item) => (
           <Card key={item.label} className="p-4">

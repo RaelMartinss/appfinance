@@ -14,13 +14,14 @@ import {
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { NavigationLinks } from '@/components/navigation-links';
+import { VALOR_TOTAL } from './portfolio-allocation';
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-background border-b lg:hidden">
-      <div className="font-semibold">Portfolio Value: R$ 50.000,00</div>
+      <div className="font-semibold">Portfolio Value: R$ {VALOR_TOTAL}</div>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" aria-label="Open menu">

@@ -12,6 +12,7 @@ import { Portfolio } from '@/lib/types';
 import { useEffect, useState } from 'react';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
+export let VALOR_TOTAL = 0;
 
 export function PortfolioAllocation() {
   const [portfolio, setPortfolio] = useState<Portfolio[]>([]);
@@ -67,7 +68,10 @@ export function PortfolioAllocation() {
         allocation.fixedIncome += quantity * currentPrice;
       }
     });
-  
+    console.log('allocation +++++++++++++++', allocation);
+    // Calcula o valor total do portfólio
+    VALOR_TOTAL = Object.values(allocation).reduce((acc, value) => acc + value, 0);
+    console.log('VALOR_TOTAL +++++++++++++++', VALOR_TOTAL);
     return allocation;
   };
   

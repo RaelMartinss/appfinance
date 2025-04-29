@@ -49,12 +49,12 @@ export function AssetsTable() {
       <table className="min-w-full px-4 lg:px-0">
         <thead>
           <tr className="border-b">
-            <th className="text-left p-4">Purchase Date</th>
-            <th className="text-left p-4">Group</th>
-            <th className="text-left p-4">Ticker</th>
-            <th className="text-right p-4">Shares</th>
-            <th className="text-right p-4">Average Price</th>
-            <th className="text-right p-4">Total</th>
+              <th className="text-left p-4">Data da Compra</th>
+              <th className="text-left p-4">Grupo</th>
+              <th className="text-left p-4">Ticker</th>
+              <th className="text-right p-4">Ações</th>
+              <th className="text-right p-4">Preço Médio</th>
+              <th className="text-right p-4">Total</th>
           </tr>
         </thead>
         <tbody>
@@ -69,16 +69,14 @@ export function AssetsTable() {
                 {asset.quantity?.toLocaleString() || '0'} {/* Verificando se shares é válido */}
               </td>
               <td className="p-4 text-right">
-                {asset.averagePrice?.toLocaleString('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
-                }) || 'R$ 0,00'} {/* Verificando se averagePrice é válido */}
+                {Number(asset.averagePrice).toLocaleString('pt-BR', {
+                  style: 'decimal',
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                })}
               </td>
               <td className="p-4 text-right">
-                {((asset.quantity || 0) * (asset.averagePrice || 0)).toLocaleString('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
+                {((asset.quantity || 0) * (asset.averagePrice || 0)).toLocaleString('pt-BR', {style: 'decimal', maximumFractionDigits: 2})}
               </td>
             </tr>
           ))}
