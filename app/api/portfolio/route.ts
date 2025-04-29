@@ -52,6 +52,7 @@ export async function POST(request: Request): Promise<Response> {
     });
 
     if (existingPosition) {
+      console.log("Posição existente encontrada:", existingPosition, type);
       if (type === "buy") {
         const newQuantity = new Decimal(existingPosition.quantity).plus(quantity);
         const newAveragePrice = new Decimal(existingPosition.quantity)
@@ -68,6 +69,11 @@ export async function POST(request: Request): Promise<Response> {
             currentPrice: price,
             lastUpdate: new Date(),
           },
+        });
+      }else {
+        console.log("############### Venda detectada em sell aqui estamos ##############");
+        const deletePortfolio = await prisma.portfolio.delete({
+          where: { symbol },
         });
       }
     } else {

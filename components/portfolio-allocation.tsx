@@ -40,6 +40,7 @@ export function PortfolioAllocation() {
   const calculateAllocation = () => {
     const allocation = {
       fiis: 0,
+      reits: 0,
       stocks: 0,
       crypto: 0,
       international: 0,
@@ -47,12 +48,15 @@ export function PortfolioAllocation() {
     };
   
     portfolio.forEach((item) => {
+      console.log('items ++++++++', item);
       const quantity = item.quantity ?? 0;  // Atribui 0 se quantity for undefined
       const currentPrice = item.currentPrice ?? 0;  // Atribui 0 se currentPrice for undefined
   
       // Agora, usa quantity e currentPrice com a garantia de que não são indefinidos
       if (item.assetType === 'fiis') {
         allocation.fiis += quantity * currentPrice;
+      } else if (item.assetType === 'reits') {
+        allocation.reits += quantity * currentPrice;
       } else if (item.assetType === 'stocks') {
         allocation.stocks += quantity * currentPrice;
       } else if (item.assetType === 'crypto') {
@@ -71,11 +75,12 @@ export function PortfolioAllocation() {
   const allocation = calculateAllocation();
 
   const dados: ChartData<'pie'> = {
-    labels: ['FIIs', 'Stocks', 'Crypto', 'International', 'Fixed Income'],
+    labels: ['FIIs','Reits', 'Stocks', 'Crypto', 'International', 'Fixed Income'],
     datasets: [
       {
         data: [
           allocation.fiis,
+          allocation.reits,
           allocation.stocks,
           allocation.crypto,
           allocation.international,
@@ -106,20 +111,20 @@ export function PortfolioAllocation() {
       legend: {
         position: 'bottom' as const,
         labels: {
-          color: 'currentColor',
+          color: '#fff',
         },
       },
       title: {
         display: true,
         text: 'Portfolio Allocation',
-        color: 'currentColor',
+        color: '#fff',
       },
     },
   };
 
   return (
     <div className="bg-card rounded-lg border p-6">
-      <h2 className="text-2xl font-semibold mb-6">Portfolio Allocation</h2>
+      <h2 className="text-2xl font-semibold mb-6">Alocação de Portfólio</h2>
       <div className="aspect-square">
         <Pie data={dados} options={options} />
       </div>

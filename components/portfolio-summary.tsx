@@ -23,6 +23,7 @@ export function PortfolioSummary() {
     const summary = {
       availableCash: 0,
       fiis: 0,
+      reits: 0,
       crypto: 0,
       stocks: 0,
       international: 0,
@@ -34,6 +35,8 @@ export function PortfolioSummary() {
   
       if (item.assetType === 'fiis') {
         summary.fiis += quantity * (item.currentPrice ?? 0);
+      }else if (item.assetType === 'reits') {
+        summary.reits += quantity * (item.currentPrice ?? 0);
       } else if (item.assetType === 'stocks') {
         summary.stocks += quantity * (item.currentPrice ?? 0);
       } else if (item.assetType === 'crypto') {
@@ -57,6 +60,7 @@ export function PortfolioSummary() {
   const summaryData = [
     { label: 'Available Cash', value: `R$ ${summary.availableCash.toLocaleString('pt-BR')}`, color: 'text-green-500' },
     { label: 'FIIs', value: `R$ ${summary.fiis.toLocaleString('pt-BR')}`, color: 'text-blue-500' },
+    { label: 'Reits', value: `R$ ${summary.reits.toLocaleString('pt-BR')}`, color: 'text-green-400' },
     { label: 'Crypto', value: `R$ ${summary.crypto.toLocaleString('pt-BR')}`, color: 'text-purple-500' },
     { label: 'Stocks', value: `R$ ${summary.stocks.toLocaleString('pt-BR')}`, color: 'text-orange-500' },
     { label: 'International', value: `R$ ${summary.international.toLocaleString('pt-BR')}`, color: 'text-cyan-500' },
@@ -65,7 +69,7 @@ export function PortfolioSummary() {
 
   return (
     <div className="bg-card rounded-lg border p-6">
-      <h2 className="text-2xl font-semibold mb-6">Portfolio Summary</h2>
+      <h2 className="text-2xl font-semibold mb-6 ">Portfolio Summary</h2>
       <div className="grid gap-4">
         {summaryData.map((item) => (
           <Card key={item.label} className="p-4">

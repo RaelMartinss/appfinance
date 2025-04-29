@@ -7,7 +7,7 @@ import { StockData } from "@/lib/types";
 import { formatBRLNumber, parseBRLNumber, formatCurrency } from "@/lib/utils";
 
 interface InvestmentCalculatorProps {
-  stockData: StockData | null;
+  readonly stockData: StockData | null;
 }
 
 export function InvestmentCalculator({ stockData }: InvestmentCalculatorProps) {
@@ -32,7 +32,7 @@ export function InvestmentCalculator({ stockData }: InvestmentCalculatorProps) {
         setInvestment(formatCurrency(numValue * sharePrice ));
         setMonthlyIncome(formatCurrency(numValue * monthlyDividend));
         break;
-      case "investment":
+      case "investment": {
         const calculatedShares = (numValue / sharePrice).toFixed(0);
         setShares(calculatedShares);
         setInvestment(formatCurrency(numValue));
@@ -40,12 +40,14 @@ export function InvestmentCalculator({ stockData }: InvestmentCalculatorProps) {
           formatCurrency(parseInt(calculatedShares) * monthlyDividend)
         );
         break;
-      case "income":
+      }
+      case "income": {
         const requiredShares = (numValue / monthlyDividend).toFixed(0);
         setShares(requiredShares);
         setInvestment(formatCurrency(parseInt(requiredShares) * sharePrice));
         setMonthlyIncome(formatCurrency(numValue));
         break;
+      }
     }
   };
 
