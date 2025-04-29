@@ -52,7 +52,6 @@
     "react-resizable-panels": "^2.1.7",
     "recharts": "^2.13.3",
     "sonner": "^1.4.3",
-    "sqlite3": "^5.1.7",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "yahoo-finance2": "^2.9.1",
