@@ -66,7 +66,7 @@ export async function POST(request: Request): Promise<Response> {
       
         // Atualiza o portfólio
         const updatedPortfolio = await prisma.portfolio.update({
-          where: { symbol },
+          where: { symbol_userId: { symbol, userId } },
           data: {
             quantity: newQuantity.toNumber(), 
             averagePrice: newAveragePrice.toNumber(),
@@ -77,7 +77,7 @@ export async function POST(request: Request): Promise<Response> {
       }else {
         console.log("############### Venda detectada em sell aqui estamos ##############");
         const deletePortfolio = await prisma.portfolio.delete({
-          where: { symbol },
+          where: { symbol_userId: { symbol, userId } },
         });
       }
     } else {
