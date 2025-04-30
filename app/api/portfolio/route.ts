@@ -47,9 +47,13 @@ export async function POST(request: Request): Promise<Response> {
       },
     });
 
-    const existingPosition: Portfolio | null = await prisma.portfolio.findUnique({
-      where: { symbol },
+    const existingPosition: Portfolio | null = await prisma.portfolio.findFirst({
+      where: {
+          symbol,
+          userId,
+      },
     });
+    
 
     if (existingPosition) {
       console.log("Posição existente encontrada:", existingPosition, type);
@@ -119,7 +123,7 @@ export async function GET(request: Request) {
     const portfolio = await prisma.portfolio.findMany({
       where: { userId: Number(userId) },
     });
-
+    console.log('Portfolio:____________))))', portfolio);
     return new Response(JSON.stringify(portfolio), { status: 200 });
   } catch (err) {
     console.error("Erro ao buscar o portfólio:", err);

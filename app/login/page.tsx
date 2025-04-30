@@ -35,8 +35,6 @@ export default function Login() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-
-      console.log('Response:', response);
       
       const result = await response.json();
       if (response.ok) {
@@ -49,9 +47,6 @@ export default function Login() {
         throw new Error(result.error || 'Failed to login');
       }
 
-      // toast.success('Login successful');
-      // router.push('/');
-      // router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to login');
     } finally {

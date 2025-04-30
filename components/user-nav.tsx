@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -17,6 +17,19 @@ import { toast } from 'sonner';
 export function UserNav() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+
+  useEffect(() => {
+      // Fetch user data
+      const fetchUser = async () => {
+        const response = await fetch('/api/auth/user');
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        }
+      }
+      fetchUser();
+  })
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -51,7 +64,16 @@ export function UserNav() {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <div className='flex items-center space-x-2 p-4'>
+        <Avatar className="h-5 w-5">
+            <AvatarFallback>
+              <User className="h-3 w-3" />
+              
+            </AvatarFallback>
+          </Avatar>
+          <span>{user?.name}</span>
+        </div>
+        {/* <DropdownMenuLabel>Conta</DropdownMenuLabel> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"

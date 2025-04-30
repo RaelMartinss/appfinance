@@ -44,7 +44,7 @@ model Transaction {
 
 model Portfolio {
   id           Int      @id @default(autoincrement())
-  symbol       String   @unique
+  symbol       String
   name         String
   assetType    String   @map("asset_type")
   quantity     Decimal  /// Quantidade total no portfólio
@@ -55,17 +55,19 @@ model Portfolio {
   userId       Int      /// Chave estrangeira para o usuário
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([symbol, userId])
   @@map("portfolio")
 }
 
 model Favoritos {
   id      Int      @id @default(autoincrement())
-  symbol  String   @unique
+  symbol  String
   name    String
   addedAt DateTime @default(now()) @map("added_at")
 
   userId  Int      /// Chave estrangeira para o usuário
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([symbol, userId]) // Unique por usuário + symbol, não só o symbol
   @@map("favoritos")
 }

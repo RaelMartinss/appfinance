@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Star, Plus } from 'lucide-react';
 import { StockData } from '@/lib/types';
 import { toast } from 'sonner';
+import { Sidebar } from '@/components/sidebar';
 
 interface StockPageProps {
   params: {

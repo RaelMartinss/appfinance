@@ -7,6 +7,8 @@ export async function POST(request: Request) {
   try {
     const { symbol, name, userId } = await request.json();
 
+    console.log('symbol________________)))))name, userId', symbol, name, userId);
+
     if (!symbol || !name || !userId) {
       return new Response("Campos obrigatórios estão ausentes.", { status: 400 });
     }
@@ -61,7 +63,7 @@ export async function GET(request: Request) {
         userId: Number(userId),
       },
     });
-
+    console.log('favoritos', favoritos);
     if (favoritos.length === 0) {
       return new Response("Nenhum favorito encontrado", { status: 404 });
     }

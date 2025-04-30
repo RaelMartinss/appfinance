@@ -43,6 +43,7 @@ export function PortfolioAllocation() {
       fiis: 0,
       reits: 0,
       stocks: 0,
+      stocksUS: 0,
       crypto: 0,
       international: 0,
       fixedIncome: 0,
@@ -60,6 +61,8 @@ export function PortfolioAllocation() {
         allocation.reits += quantity * currentPrice;
       } else if (item.assetType === 'stocks') {
         allocation.stocks += quantity * currentPrice;
+      } else if (item.assetType === 'stocks-us') {
+        allocation.stocksUS += quantity * currentPrice;
       } else if (item.assetType === 'crypto') {
         allocation.crypto += quantity * currentPrice;
       } else if (item.assetType === 'international') {
@@ -85,7 +88,7 @@ export function PortfolioAllocation() {
         data: [
           allocation.fiis,
           allocation.reits,
-          allocation.stocks,
+          allocation.stocks + allocation.stocksUS,
           allocation.crypto,
           allocation.international,
           allocation.fixedIncome,
