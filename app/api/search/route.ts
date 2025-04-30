@@ -67,7 +67,6 @@ export async function GET(request: Request) {
 
     return NextResponse.json(combinedResults);
   } catch (error) {
-    console.error('Search error:', error);
     // If API fails, return at least local results
     return NextResponse.json(
       POPULAR_ASSETS.filter(

@@ -52,11 +52,9 @@ export default function MarketPage() {
       setLoading(true);
         try {
           const userte = await fetch('/api/auth/user');
-          console.log(userte);
           const userId = await userte.json();
-          console.log('userId', userId);
+          
           const response = await fetch(`/api/favorites?userId=${userId.id}`);
-          console.log('response', response);
           const data: Fund[] = await response.json();
     
           if (Array.isArray(data)) {

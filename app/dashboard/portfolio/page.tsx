@@ -57,7 +57,6 @@ function PortfolioContent() {
     setIsSubmitting(true);
     try {
       const userte = await fetch('/api/auth/user');
-      console.log('userte', userte);
       const userId = await userte.json();
       const response = await fetch('/api/portfolio', {
         method: 'POST',
@@ -75,10 +74,8 @@ function PortfolioContent() {
           userId: userId.id
         }),
       });
-      console.log('response', response);
 
       const data = await response.json();
-      console.log('data', data);
       if (!response.ok) {
         throw new Error('Failed to update portfolio');
       }

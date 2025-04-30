@@ -56,7 +56,6 @@ export async function POST(request: Request): Promise<Response> {
     
 
     if (existingPosition) {
-      console.log("Posição existente encontrada:", existingPosition, type);
       if (type === "buy") {
         const newQuantity = new Decimal(existingPosition.quantity).plus(quantity);
         const newAveragePrice = new Decimal(existingPosition.quantity)
@@ -75,7 +74,6 @@ export async function POST(request: Request): Promise<Response> {
           },
         });
       }else {
-        console.log("############### Venda detectada em sell aqui estamos ##############");
         const deletePortfolio = await prisma.portfolio.delete({
           where: { symbol_userId: { symbol, userId } },
         });
@@ -104,7 +102,6 @@ export async function POST(request: Request): Promise<Response> {
         }), 
       { status: 200 });
   } catch (err) {
-    console.error("Erro:", err);
     return new Response("Erro interno", { status: 500 });
   }
 }
@@ -123,10 +120,8 @@ export async function GET(request: Request) {
     const portfolio = await prisma.portfolio.findMany({
       where: { userId: Number(userId) },
     });
-    console.log('Portfolio:____________))))', portfolio);
     return new Response(JSON.stringify(portfolio), { status: 200 });
   } catch (err) {
-    console.error("Erro ao buscar o portfólio:", err);
     return new Response(
       JSON.stringify({ error: "Erro interno do servidor" }),
       { status: 500 }

@@ -26,9 +26,7 @@ export function AssetsTable() {
       const userte = await fetch('/api/auth/user');
       const userId = await userte.json();
       const response = await fetch(`/api/portfolio?userId=${userId.id}`);
-      console.log('Response: PORTIFOLIO', response);  // Logando a resposta para depuração
       const data = await response.json();
-      console.log('Data: PORTIFOLIO', data);  // Logando os dados recebidos
       
       setAssets(data);  // Atualiza os dados no estado
     };

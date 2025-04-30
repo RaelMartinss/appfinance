@@ -50,7 +50,6 @@ export function PortfolioAllocation() {
     };
   
     portfolio.forEach((item) => {
-      console.log('items ++++++++', item);
       const quantity = item.quantity ?? 0;  // Atribui 0 se quantity for undefined
       const currentPrice = item.currentPrice ?? 0;  // Atribui 0 se currentPrice for undefined
   
@@ -71,10 +70,9 @@ export function PortfolioAllocation() {
         allocation.fixedIncome += quantity * currentPrice;
       }
     });
-    console.log('allocation +++++++++++++++', allocation);
     // Calcula o valor total do portfólio
     VALOR_TOTAL = Object.values(allocation).reduce((acc, value) => acc + value, 0);
-    console.log('VALOR_TOTAL +++++++++++++++', VALOR_TOTAL);
+
     return allocation;
   };
   

@@ -73,7 +73,6 @@ export async function GET(req: Request) {
 
     return NextResponse.json(responseData);
   } catch (error) {
-    console.error("Erro ao buscar dados:", error);
     return NextResponse.json({ error: "Erro ao buscar dados." }, { status: 500 });
   }
 }
