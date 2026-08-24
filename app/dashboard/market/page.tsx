@@ -56,21 +56,19 @@ export default function MarketPage() {
           
           const response = await fetch(`/api/favorites?userId=${userId.id}`);
           const data: Fund[] = await response.json();
-    
-          if (Array.isArray(data)) {
+
+          if (response.ok && Array.isArray(data)) {
+            setFavorites(data);
             const symbols: string[] = data.map((item) => item.symbol);
-    
-            const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
-            const d = await r.json();
-            setPecentResultsFavoritos(d);
+
+            if (symbols.length > 0) {
+              const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
+              const d = await r.json();
+              setPecentResultsFavoritos(r.ok && Array.isArray(d) ? d : []);
+            }
           } else {
-            console.error('Os dados não são uma tabela.');
-          }
-    
-          if (response.ok) {
-            setFavorites(data); // Corrigido: agora usamos apenas a watchlist
-          } else {
-            console.error('Erro ao buscar favoritos:');
+            setFavorites([]);
+            setPecentResultsFavoritos([]);
           }
         } catch (error) {
           console.error('Erro ao buscar favoritos:', error);
@@ -91,23 +89,20 @@ export default function MarketPage() {
         const response = await fetch(`/api/portfolio?userId=${userId.id}`);
         const data: Fund[] = await response.json();
 
-        if (Array.isArray(data)) {
+        if (response.ok && Array.isArray(data)) {
           const symbols: string[] = data.map(item => item.symbol);
 
-          const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
-          const d = await r.json();
-          setPecentResults(d)
-
-        }
-        else {
-          console.error('Os dados não são uma tabela.');
-        }
-
-        if (response.ok) {
-          setPortfolio(data);
+          if (symbols.length > 0) {
+            const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
+            const d = await r.json();
+            setPecentResults(r.ok && Array.isArray(d) ? d : []);
+          }
         } else {
-          console.error('Erro ao buscar favoritos:');
+          setPortfolio([]);
+          setPecentResults([]);
         }
+
+        if (response.ok && Array.isArray(data)) setPortfolio(data);
       } catch (error) {
         console.error('Erro ao buscar favoritos:', error);
       } finally {
@@ -125,23 +120,20 @@ export default function MarketPage() {
         const response = await fetch('/api/gainers');
         const data: Fund[] = await response.json();
 
-        if (Array.isArray(data)) {
+        if (response.ok && Array.isArray(data)) {
           const symbols: string[] = data.map(item => item.symbol);
 
-          const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
-          const d = await r.json();
-          setPecentResults(d)
-
-        }
-        else {
-          console.error('Os dados não são uma tabela.');
-        }
-
-        if (response.ok) {
-          setTopGaners(data);
+          if (symbols.length > 0) {
+            const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
+            const d = await r.json();
+            setPecentResults(r.ok && Array.isArray(d) ? d : []);
+          }
         } else {
-          console.error('Erro ao buscar favoritos:');
+          setTopGaners([]);
+          setPecentResults([]);
         }
+
+        if (response.ok && Array.isArray(data)) setTopGaners(data);
       } catch (error) {
         console.error('Erro ao buscar favoritos:', error);
       } finally {
