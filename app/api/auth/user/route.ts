@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { verifyToken, getUserById } from '@/lib/auth';
+import { decrypt, getUserById } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get('token')?.value;
@@ -7,13 +7,37 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  const decodedToken = verifyToken(token);
+  let decodedToken;
+  try {
+    decodedToken = await decrypt(token);
+  } catch {
+    const response = NextResponse.json(
+      { error: 'Invalid token'},
+      {status: 401 }
+    );
 
-  if (!decodedToken) {
-    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    response.cookies.delete('token');
+    return response
   }
 
-  const user = await getUserById(decodedToken.id);
+  if (!decodedToken) {
+    const response = NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+
+    response.cookies.delete('token');
+    return response;
+  }
+
+  const userId = Number(decodedToken.id);
+
+  if (!Number.isInteger(userId)) {
+    return NextResponse.json(
+      { error: 'Invalid token' },
+      { status: 401 }
+    );
+  }
+
+  const user = await getUserById(userId);
+
   if (!user) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }

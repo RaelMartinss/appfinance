@@ -1,11 +1,8 @@
 import { jwtVerify, SignJWT } from 'jose';
-// import jwt from 'jsonwebtoken';
-// import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/index';
-
 import { compare, hash } from 'bcryptjs';
-import { sign, verify } from 'jsonwebtoken';
+
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
@@ -60,7 +57,7 @@ export async function getUserFromToken(request: NextRequest) {
 export async function setUserCookie(response: NextResponse, token: string) {
   response.cookies.set('token', token, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     domain:  process.env.NODE_ENV === 'development' ? '.localhost' : 'appfinanci.site',
     path: '/',
     sameSite: 'lax',
@@ -69,32 +66,12 @@ export async function setUserCookie(response: NextResponse, token: string) {
   return response;
 }
 
-// export function verifyToken(token: string) {
-//   const secret = process.env.JWT_SECRET || 'default_secret'; // Substitua por uma variável segura
-//   return jwt.verify(token, secret) as { id: number; iat: number; exp: number }; // Ajuste conforme seu payload
-// }
-
-
-
-
 export async function hashPassword(password: string) {
   return await hash(password, 12);
 }
 
 export async function verifyPassword(password: string, hashedPassword: string) {
   return await compare(password, hashedPassword);
-}
-
-export function generateToken(userId: number) {
-  return sign({ userId }, JWT_SECRET, { expiresIn: '1d' });
-}
-
-export function verifyToken(token: string) {
-  try {
-    return verify(token, JWT_SECRET) as { id: number };
-  } catch {
-    return null;
-  }
 }
 
 export async function getUserById(id: number) {

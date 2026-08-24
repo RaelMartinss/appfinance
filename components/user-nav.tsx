@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -14,22 +14,13 @@ import {
 import { LogOut, User } from 'lucide-react';
 import { toast } from 'sonner';
 
-export function UserNav() {
+interface UserNavProps {
+  user: { name: string | null; email: string } | null;
+}
+
+export function UserNav({ user }: UserNavProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
-
-  useEffect(() => {
-      // Fetch user data
-      const fetchUser = async () => {
-        const response = await fetch('/api/auth/user');
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-        }
-      }
-      fetchUser();
-  })
 
   const handleLogout = async () => {
     setIsLoading(true);
