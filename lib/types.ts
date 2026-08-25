@@ -12,6 +12,14 @@ export interface StockData {
   historicalData?: HistoricalData[]; // Opcional
 }
 
+export interface MarketGainer {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+  changePercent: number;
+}
+
 export interface PortfolioItem {
   symbol: string;
   name: string;

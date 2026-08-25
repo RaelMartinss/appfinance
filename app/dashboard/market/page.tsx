@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 import { StockCard } from '@/components/stock-card';
-import { ApiResponse, Fund, StockData } from '@/lib/types';
+import { ApiResponse, Fund, MarketGainer, StockData } from '@/lib/types';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { SearchCommand } from '@/components/search-command';
 import Link from 'next/link';
@@ -19,7 +19,7 @@ export default function MarketPage() {
   const [pecentResultsFavoritos, setPecentResultsFavoritos] = useState<StockData[]>([]);
   const [favorites, setFavorites] = useState<Fund[]>([]); 
   const [portfolio, setPortfolio] = useState<Fund[]>([]);
-  const [topGaners, setTopGaners] = useState<Fund[]>([]); 
+  const [topGaners, setTopGaners] = useState<MarketGainer[]>([]); 
   const [loading, setLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -118,22 +118,13 @@ export default function MarketPage() {
       setLoading(true);
       try {
         const response = await fetch('/api/gainers');
-        const data: Fund[] = await response.json();
+        const data: MarketGainer[] = await response.json();
 
         if (response.ok && Array.isArray(data)) {
-          const symbols: string[] = data.map(item => item.symbol);
-
-          if (symbols.length > 0) {
-            const r = await fetch(`/api/stocks?symbol=${symbols.join(',').toUpperCase()}`);
-            const d = await r.json();
-            setPecentResults(r.ok && Array.isArray(d) ? d : []);
-          }
+          setTopGaners(data);
         } else {
           setTopGaners([]);
-          setPecentResults([]);
         }
-
-        if (response.ok && Array.isArray(data)) setTopGaners(data);
       } catch (error) {
         console.error('Erro ao buscar favoritos:', error);
       } finally {
@@ -327,57 +318,45 @@ export default function MarketPage() {
             <p>Loading...</p> // Indicador de carregamento
           ) : topGaners.length > 0 ? (
             <div className="space-y-4">
-              {topGaners.map((topGaners) => {
-                // Procurar o preço correspondente ao símbolo no searchResults
-                const stockDataGaners = pecentResults.find(
-                  (stock) => stock.symbol === topGaners.symbol
-                );
-
+              {topGaners.map((topGainer) => {
                 return (
                   <div
-                    key={topGaners.symbol}
+                    key={topGainer.symbol}
                     className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-lg font-semibold">{topGaners.symbol[0]}</span>
+                        <span className="text-lg font-semibold">{topGainer.symbol[0]}</span>
                       </div>
                       <div>
-                        <h3 className="font-medium">{topGaners.name}</h3>
-                        <p className="text-sm text-muted-foreground">{topGaners.symbol}</p>
+                        <h3 className="font-medium">{topGainer.name}</h3>
+                        <p className="text-sm text-muted-foreground">{topGainer.symbol}</p>
                       </div>
                     </div>
                     <div className="text-right">
                           <p className="font-medium">
-                            {stockDataGaners?.price  !== undefined ? 
-                                          stockDataGaners.price.toLocaleString('pt-BR', {
+                                {topGainer.price.toLocaleString('pt-BR', {
                                     style: 'currency',
                                     currency: 'BRL',
-                                  })
-                                : 'Carregando...'}
+                                  })}
                            </p>     
                            <div className="flex items-center gap-1">
-                              {stockDataGaners?.changePercent  !== undefined ? (
-                                stockDataGaners?.changePercent > 0 ? (
+                              {topGainer.changePercent > 0 ? (
                                 <TrendingUp className="w-4 h-4 text-green-500" />
-                                ) : stockDataGaners.changePercent < 0 ? (
+                                ) : topGainer.changePercent < 0 ? (
                                 <TrendingDown className="w-4 h-4 text-red-500" />
                                 ) : (
                                 <span className="w-4 h-4 text-gray-500" />
                                 )
-                              ) : (
-                              <span className="w-4 h-4 text-gray-500">-</span>
-                              )}
+                              }
                               <span
                               className={`text-sm ${
-                                stockDataGaners?.changePercent !== undefined && stockDataGaners.changePercent > 0
+                                topGainer.changePercent > 0
                                   ? 'text-green-500'
                                   : 'text-red-500'
                               }`}
                             >
-                              {stockDataGaners?.changePercent !== undefined
-                                ? `${stockDataGaners.changePercent.toFixed(2)}%`
-                                : 'N/A'}
+                              {`${topGainer.changePercent.toFixed(2)}%`}
                             </span>
                             </div>
                           </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -15,12 +15,29 @@ import { LogOut, User } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface UserNavProps {
-  user: { name: string | null; email: string } | null;
+  user?: { name: string | null; email: string } | null;
 }
 
 export function UserNav({ user }: UserNavProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState(user ?? null);
+
+  useEffect(() => {
+    if (user !== undefined) {
+      setCurrentUser(user);
+      return;
+    }
+
+    const fetchUser = async () => {
+      const response = await fetch('/api/auth/user');
+      if (response.ok) {
+        setCurrentUser(await response.json());
+      }
+    };
+
+    fetchUser();
+  }, [user]);
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -62,7 +79,7 @@ export function UserNav({ user }: UserNavProps) {
               
             </AvatarFallback>
           </Avatar>
-          <span>{user?.name}</span>
+          <span>{currentUser?.name}</span>
         </div>
         {/* <DropdownMenuLabel>Conta</DropdownMenuLabel> */}
         <DropdownMenuSeparator />
